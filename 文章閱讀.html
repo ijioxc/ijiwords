@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章閱讀 — ijiWords</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 28px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 18px;
+      color: #1a1a2e;
+      text-decoration: none;
+    }
+    .logo span { color: #6366f1; }
+    .back-link {
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 5px 14px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .back-link:hover { background: #f9fafb; color: #374151; }
+
+    /* ── Tab nav ── */
+    .tab-nav {
+      background: #fff;
+      border-bottom: 2px solid #e5e7eb;
+      padding: 0 28px;
+      display: flex;
+      gap: 2px;
+    }
+    .tab-btn {
+      padding: 14px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .tab-btn.active { color: #1a1a2e; border-bottom-color: #6366f1; }
+    .tab-btn:hover:not(.active) { color: #374151; }
+
+    /* ── Main ── */
+    main { max-width: 1120px; margin: 0 auto; padding: 48px 28px 80px; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Recording card ── */
+    .rec-card {
+      margin-bottom: 64px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .rec-card:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .rec-header { margin-bottom: 20px; }
+    .rec-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .rec-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      background: #eef2ff;
+      color: #6366f1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+    }
+    .rec-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.3;
+    }
+    .rec-subtitle {
+      font-size: 13.5px;
+      color: #9ca3af;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ── Audio player ── */
+    .audio-row {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .audio-icon { font-size: 18px; flex-shrink: 0; }
+    audio { flex: 1; height: 36px; min-width: 0; }
+
+    /* ── Bilingual grid ── */
+    .bilingual {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .bi-headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .bi-hd {
+      background: #f9fafb;
+      padding: 10px 22px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    .bi-hd + .bi-hd { border-left: 1px solid #e5e7eb; }
+
+    .bi-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .bi-col {
+      padding: 28px 22px;
+      vertical-align: top;
+    }
+    .bi-col + .bi-col {
+      border-left: 1px solid #e5e7eb;
+      background: #fafffe;
+    }
+
+    /* ── Speaker block ── */
+    .spk { margin-bottom: 18px; }
+    .spk:last-child { margin-bottom: 0; }
+    .spk-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #6366f1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .spk-en {
+      font-family: 'DM Mono', monospace;
+      font-size: 13.5px;
+      color: #1a1a2e;
+      line-height: 1.8;
+    }
+    .spk-zh {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.95;
+    }
+
+    /* ── Narrator block (essays) ── */
+    .narr { margin-bottom: 20px; }
+    .narr:last-child { margin-bottom: 0; }
+    .narr-en {
+      font-family: 'DM Mono', monospace;
+      font-size: 13.5px;
+      color: #1a1a2e;
+      line-height: 1.85;
+    }
+    .narr-zh {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 14px;
+      color: #374151;
+      line-height: 2;
+    }
+
+    /* ── Section divider inside bilingual ── */
+    .conv-sep {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #d1d5db;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 18px;
+      margin-top: 18px;
+      margin-bottom: 14px;
+    }
+    .conv-sep:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+    /* ── Bold in narr ── */
+    strong { color: #111827; }
+
+    /* ── Responsive ── */
+    @media (max-width: 660px) {
+      .bi-headers, .bi-body { grid-template-columns: 1fr; }
+      .bi-hd + .bi-hd { border-left: none; border-top: 1px solid #e5e7eb; }
+      .bi-col + .bi-col { border-left: none; border-top: 1px solid #e5e7eb; background: #fafffe; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">iji<span>Words</span></a>
+  <a href="index.html" class="back-link">← 返回總整理</a>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="setTab('u8', this)">Unit 8</button>
+  <button class="tab-btn" onclick="setTab('u9', this)">Unit 9</button>
+  <button class="tab-btn" onclick="setTab('u10', this)">Unit 10</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════ UNIT 8 ═══════════════ -->
+<div id="tab-u8" class="tab-panel active">
+
+  <!-- S8.5 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 8.5</span>
+        <div class="rec-title">借錢的尷尬對話</div>
+      </div>
+      <div class="rec-subtitle">Liz confronts Jim about money he's borrowed and never paid back — a tactful but honest conversation.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/8.5.mp3" type="audio/mpeg">
+        Your browser does not support audio.
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Thanks, here's your coffee.</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">Oh, hi. There's something I've been meaning to talk to you about.</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Oh yeah?</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">It's just that... well... you know you borrowed some money from me last week?</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Oh right. It was ten dollars, wasn't it? I don't actually have that on me at the moment.</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">No, I know that. It's... I hope you don't take this the wrong way, but, um... it's just that this isn't the first time I've lent you money and, er, well, you haven't paid it back. I mean, I know it's not a lot, just small amounts each time, but it kind of adds up really quickly... I dunno. Do you know what I mean?</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Yeah. Sorry, I didn't realize. I know I'm terrible with money. I just forget. Look, I promise I'll give it back, but could you wait a week? Until I get paid?</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">Well, actually, you've said that once before. I don't want you to get the wrong idea, but... it, you know, never happened. Do you see where I'm coming from? It makes things slightly awkward. It makes me feel a bit funny around you, when I'm coming round...</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Oh. Yeah, I suppose so.</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">Look, I have a suggestion. I'd feel better if we could work out how much is owed, and then you could pay me back a little each week, you know, however much you can afford. How does that sound?</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-en">Yeah, yeah. That sounds reasonable.</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-en">OK, great. So...</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">謝謝，這是你的咖啡。</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">嗨。有件事我一直想跟你說。</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">哦，是嗎？</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">就是……嗯……你記得上週跟我借了一些錢嗎？</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">哦，對。是十塊錢吧？我現在手邊剛好沒有。</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">不，我知道啊。就是……我希望你別誤解，但，嗯……這已經不是你第一次向我借錢了，而且你都沒有還。我知道每次金額不多，都是小數目，但加起來其實很快就累積了……你明白我的意思嗎？</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">嗯。對不起，我沒意識到。我就是很不會管錢，一直忘記。好，我保證一定會還你，但可以等我一週嗎？等我領薪水？</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">好吧，其實你之前也說過同樣的話了。我不想讓你誤解，但……你知道，後來根本沒發生。你明白我的感受嗎？這讓情況有點尷尬。你一來找我，我就覺得有點怪……</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">哦。嗯，我想也是。</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">我有個建議。如果我們可以算清楚你到底欠多少，然後你每週還我一點，你負擔得起的金額，這樣我會比較輕鬆。聽起來怎麼樣？</div></div>
+          <div class="spk"><div class="spk-name">JIM</div><div class="spk-zh">好，好。這樣聽起來很合理。</div></div>
+          <div class="spk"><div class="spk-name">LIZ</div><div class="spk-zh">好，太好了。那……</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8.8 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 8.8</span>
+        <div class="rec-title">They Call Me "Bob" — 美國社交習慣</div>
+      </div>
+      <div class="rec-subtitle">A guide to American customs: names, greetings, body language, and punctuality.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/8.8.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="narr"><div class="narr-en">OK, here are some things that I think would be useful if you're visiting the States, especially if you're coming here to do business.</div></div>
+          <div class="narr"><div class="narr-en">So, first of all, with names. When you first meet someone, it's considered good manners to use a title along with their last name, you know, like Mr. Smith or Ms. Jones, and so on. But the funny thing is that, in fact, people will in most cases want to use first names — like they'll say, "Hey, call me Bob," you know? If you stick to a more formal "Mr. Smith" sort of thing, you'll find most people will periodically use your name in a conversation. If you're not used to it, it can seem a little strange.</div></div>
+          <div class="narr"><div class="narr-en">Now, with meeting people for the first time, it's pretty normal for people to shake hands, certainly in business. Americans tend to avoid greetings that involve being too close — hugging, kissing — with people they don't know well. With family members and friends, however, don't be surprised if someone gives you a hug or a kiss on the cheek.</div></div>
+          <div class="narr"><div class="narr-en">Last of all, timing. Punctuality is very important in the United States. If you are going to be late, you need to let people know — it's the same for social occasions. You need to arrive on time.</div></div>
+          <div class="narr"><div class="narr-en">Of course, having said all this, it's important to remember that the United States is huge and there's a lot of variety in what's acceptable in different places. Anyway, I hope this advice helps.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="narr"><div class="narr-zh">好，以下是一些對你造訪美國很有幫助的事情，尤其是如果你是來這裡做生意的。</div></div>
+          <div class="narr"><div class="narr-zh">首先是稱呼。第一次見到某人時，使用頭銜加上姓氏被認為是有禮貌的，例如「史密斯先生」或「瓊斯女士」等等。但有趣的是，事實上大多數情況下人們都會想要直接叫名字——比如他們會說「叫我鮑勃就好」。如果你堅持用比較正式的「史密斯先生」，你會發現大多數人在對話中會不時叫你的名字。如果你不習慣，可能會覺得有點奇怪。</div></div>
+          <div class="narr"><div class="narr-zh">至於第一次見面的打招呼方式，握手是相當普遍的，在商業場合尤其如此。美國人傾向於避免與不熟識的人有過於親密的問候方式，例如擁抱或親吻臉頰。不過，對於家人或朋友，如果有人給你擁抱或親吻臉頰，不要覺得驚訝。</div></div>
+          <div class="narr"><div class="narr-zh">最後是時間觀念。守時在美國非常重要。如果你要遲到，你需要通知對方——社交場合也是一樣，要準時到達。</div></div>
+          <div class="narr"><div class="narr-zh">當然，說了這些之後，要記住美國非常大，不同地方的習俗可能差異很大。總之，希望這些建議對你有所幫助。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /u8 -->
+
+
+<!-- ═══════════════ UNIT 9 ═══════════════ -->
+<div id="tab-u9" class="tab-panel">
+
+  <!-- S9.2 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 9.2</span>
+        <div class="rec-title">遭騙的故事 — 兩段對話</div>
+      </div>
+      <div class="rec-subtitle">Conversation 1: a purse stolen at a café · Conversation 2: a fake police officer at a jewelry store.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/9.2.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="conv-sep">Conversation 1 — Lise &amp; Jeff</div>
+          <div class="spk"><div class="spk-name">LISE</div><div class="spk-en">So, what happened was, I was sitting in a café, and this young couple — they looked like tourists — asked me to take a picture of them. And I took their picture, and they thanked me and left. And then I looked at my seat and realized my purse was gone, with my cell, wallet, credit cards, keys, everything.</div></div>
+          <div class="spk"><div class="spk-name">JEFF</div><div class="spk-en">No! What did you do?</div></div>
+          <div class="spk"><div class="spk-name">LISE</div><div class="spk-en">Well, there was a guy at the next table, and he saw I was really upset. He explained what to do and he asked if I had any ID. He said he worked for that bank and gave me a phone number, and let me use his phone to call them and cancel my credit card.</div></div>
+
+          <div class="conv-sep">Conversation 2 — Dan &amp; Ingrid</div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-en">I was badly tricked a few years ago when I was working in a jewelry store.</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-en">You never told me about that. What happened?</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-en">Well, this woman came in and was looking at necklaces. She was young, attractive, well-dressed. And then this guy came in shortly afterward. When she was counting the money to pay, he flashed his police ID and said he was arresting her for using counterfeit money. He grabbed her, slammed her onto the counter, then grabbed the necklace she'd been holding and said he was taking it as evidence.</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-en">Was the money fake?</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-en">Yes! So he took it as evidence, wrote down the details, and promised me he'd bring the necklace back by the end of the day. I didn't suspect anything. Then he took the woman away, presumably to hold her at the police station.</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-en">And he didn't come back?</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-en">No. And stupid me, I didn't even start to suspect anything until it was closing time. So I phoned the police, and they had no idea what I was talking about. That was it, end of story.</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-en">How much was the necklace worth?</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-en">$600. And my boss took it out of my salary. That's why I quit.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="conv-sep">對話一 — Lise &amp; Jeff</div>
+          <div class="spk"><div class="spk-name">LISE</div><div class="spk-zh">事情是這樣的，我坐在一間咖啡廳，有一對年輕情侶——看起來像遊客——請我幫他們拍照。我幫他們拍完，他們道謝後就走了。然後我低頭一看，發現我的包不見了，手機、錢包、信用卡、鑰匙，全部都不見了。</div></div>
+          <div class="spk"><div class="spk-name">JEFF</div><div class="spk-zh">不會吧！那你怎麼辦？</div></div>
+          <div class="spk"><div class="spk-name">LISE</div><div class="spk-zh">嗯，旁邊桌有個男的，他看我很慌，就告訴我該怎麼處理，還問我有沒有任何證件。他說他在某間銀行上班，給了我一個電話號碼，還把他的手機借我打電話去掛失信用卡。</div></div>
+
+          <div class="conv-sep">對話二 — Dan &amp; Ingrid</div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-zh">幾年前我在一家珠寶店工作的時候，被狠狠地騙了一次。</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-zh">你從來沒跟我說過。是怎麼回事？</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-zh">是這樣的，有個女的進來看項鍊。她很年輕、漂亮、穿著講究。沒多久，一個男的也進來了。當那個女的在數錢付款的時候，那個男的突然出示警察證件，說要逮捕她，罪名是使用偽鈔。他抓住她，把她壓在櫃台上，然後抓走她剛才拿著的那條項鍊，說要作為證據帶走。</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-zh">那錢是假的嗎？</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-zh">對！他把項鍊當成證據帶走，寫下了一些資料，並承諾當天下班前會把項鍊送回來。我完全沒起疑心。然後他就把那個女的帶走了，應該是帶去警察局。</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-zh">他沒有回來嗎？</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-zh">沒有。我這個笨蛋，一直到快要下班的時候才開始起疑。我打電話給警察，他們完全不知道我在說什麼。就這樣，故事結束。</div></div>
+          <div class="spk"><div class="spk-name">INGRID</div><div class="spk-zh">那條項鍊值多少錢？</div></div>
+          <div class="spk"><div class="spk-name">DAN</div><div class="spk-zh">六百美元。我老闆從我的薪水裡扣了。這就是我辭職的原因。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9.5 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 9.5</span>
+        <div class="rec-title">生存物品優先順序討論</div>
+      </div>
+      <div class="rec-subtitle">Three people debate which items are most essential for survival — blanket, matches, water, knife, or rope.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/9.5.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">WOMAN 1</div><div class="spk-en">I'd say that blanket is essential. It's the warmest thing, and you need it to keep you warm. Without warmth you won't survive the night.</div></div>
+          <div class="spk"><div class="spk-name">MAN</div><div class="spk-en">Actually, I want something to make fire with. That's what I think is most important. You can use it to keep warm, to cook food, and to signal for help.</div></div>
+          <div class="spk"><div class="spk-name">WOMAN 2</div><div class="spk-en">Yes, but if you fall in the water, the blanket could drag you down. The matches are much more useful. You can't start a fire without them.</div></div>
+          <div class="spk"><div class="spk-name">WOMAN 1</div><div class="spk-en">Good point. And what about water? You'd die from dehydration faster than anything else. You can only survive a few days without it.</div></div>
+          <div class="spk"><div class="spk-name">MAN</div><div class="spk-en">OK, so maybe the order is: matches first, water bottle second, blanket third. Do you agree?</div></div>
+          <div class="spk"><div class="spk-name">WOMAN 2</div><div class="spk-en">Yes, I think that makes sense. The knife and the rope are probably the least important.</div></div>
+          <div class="spk"><div class="spk-name">WOMAN 1</div><div class="spk-en">I still think the blanket matters. Maybe we can put it joint second with the water bottle?</div></div>
+          <div class="spk"><div class="spk-name">MAN</div><div class="spk-en">Fine with me. They're useful, but not as critical as having fire and water.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">女 1</div><div class="spk-zh">我覺得毯子絕對是必需品。它是最保暖的，你需要它來維持體溫。沒有體溫的話，你熬不過一個夜晚。</div></div>
+          <div class="spk"><div class="spk-name">男</div><div class="spk-zh">其實，我想要能生火的東西。我覺得那才是最重要的。你可以用火取暖、煮食，也可以發出求救信號。</div></div>
+          <div class="spk"><div class="spk-name">女 2</div><div class="spk-zh">是啊，但如果你掉進水裡，毯子反而會把你往下拖。火柴有用多了，沒有火柴就無法生火。</div></div>
+          <div class="spk"><div class="spk-name">女 1</div><div class="spk-zh">說得有道理。那水呢？缺水是你最快死亡的原因，沒有水只能撐幾天。</div></div>
+          <div class="spk"><div class="spk-name">男</div><div class="spk-zh">好，那順序也許是：第一火柴，第二水壺，第三毯子。你們同意嗎？</div></div>
+          <div class="spk"><div class="spk-name">女 2</div><div class="spk-zh">嗯，我覺得有道理。刀子和繩子應該是最不重要的。</div></div>
+          <div class="spk"><div class="spk-name">女 1</div><div class="spk-zh">我還是覺得毯子很重要。也許可以讓它和水壺並列第二？</div></div>
+          <div class="spk"><div class="spk-name">男</div><div class="spk-zh">可以。它們有用，但沒有火和水來得關鍵。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9.8 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 9.8</span>
+        <div class="rec-title">Change the Things You Can</div>
+      </div>
+      <div class="rec-subtitle">An article about positive attitude: believing bad things pass, thinking rationally, and focusing on what you can control.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/9.8.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="narr"><div class="narr-en">We all have problems in our lives, but what makes a real difference is how we react to them. Psychologists say that people with a positive attitude have three key traits.</div></div>
+          <div class="narr"><div class="narr-en"><strong>The first</strong> is that they believe that bad things don't last forever. Most negative situations are temporary, and the people who cope best are those who keep reminding themselves of that.</div></div>
+          <div class="narr"><div class="narr-en"><strong>The second</strong> is that they think rationally — in other words, they use their head rather than their heart. In some situations this can be difficult. Here's an example from my own experience. I knew that a colleague of mine was going to be promoted, but I had found out before the official announcement. A friend suggested I should use the information to make an impression on some people I knew. But I decided not to. I thought it was wrong to use information that wasn't officially mine. I'm sure that in the end, it worked in my favor — I was promoted the following year.</div></div>
+          <div class="narr"><div class="narr-en"><strong>The third</strong> — and probably the most important — is that they distinguish between what they can change and what they cannot. There are things in life that we have absolutely no control over. Worrying about them is a total waste of time and energy. Instead, people with a positive attitude focus their attention on the things they can actually do something about.</div></div>
+          <div class="narr"><div class="narr-en">So, next time you're feeling stressed about something, ask yourself: "Can I change this?" If the answer is yes — do something. If the answer is no — stop worrying and move on.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="narr"><div class="narr-zh">我們每個人的生活中都有問題，但真正造成差異的是我們如何回應這些問題。心理學家說，擁有積極態度的人有三個關鍵特質。</div></div>
+          <div class="narr"><div class="narr-zh"><strong>第一</strong>是他們相信壞事不會永遠持續。大多數負面情況都是暫時的，而那些應對得最好的人，就是不斷提醒自己這一點的人。</div></div>
+          <div class="narr"><div class="narr-zh"><strong>第二</strong>是他們用理性思考——換句話說，他們用頭腦而非情感來做決定。在某些情況下，這可能很難做到。這裡舉一個我自身的例子。我知道一位同事即將被升遷，但我是在官方公告之前就得知這個消息的。一位朋友建議我利用這個消息在某些認識的人面前留下好印象。但我決定不這樣做。我認為利用不屬於我的消息是不對的。我確信最終這對我產生了正面影響——我在隔年被晉升了。</div></div>
+          <div class="narr"><div class="narr-zh"><strong>第三</strong>——也可能是最重要的——是他們能夠區分哪些事情是他們可以改變的，哪些是他們無法改變的。生活中有些事情我們完全無法掌控，為這些事情擔心是完全浪費時間和精力的。相反地，擁有積極態度的人會把注意力集中在他們真的能夠採取行動的事情上。</div></div>
+          <div class="narr"><div class="narr-zh">所以，下次當你對某件事感到壓力時，問問自己：「我能改變這件事嗎？」如果答案是「是的」——就去做些什麼。如果答案是「不能」——就停止擔心，繼續前進。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /u9 -->
+
+
+<!-- ═══════════════ UNIT 10 ═══════════════ -->
+<div id="tab-u10" class="tab-panel">
+
+  <!-- S10.1 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 10.1</span>
+        <div class="rec-title">電影評論大家談</div>
+      </div>
+      <div class="rec-subtitle">Two friends give their honest reviews of several movies — documentaries, action films, romances, and horror.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/10.1.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">So, come on. Honest review of all these movies we've seen.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">OK, I'll start. The documentary really made me think and it raised lots of different questions. It was absolutely fascinating.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">Really? I got lost sometimes — you had to pay attention to keep up with the plot and the relationships between all the characters. I'm honestly not sure if I understood everything.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">Well, the relationship between the two main people was beautifully handled and almost made me cry. It was really moving.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">Some scenes were absolutely terrifying — I was on the edge of my seat. In fact, I was so scared I couldn't watch.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">I was on my own at the movies and it absolutely made my skin crawl. I couldn't look away — I was really drawn in.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">And the big action movie? That was just awful. I was so bored I fell asleep.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">Me too! I couldn't stop laughing though — it was so ridiculous. There was a lot of violence and blood. I found it really difficult to watch.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">And the horror movie? That was just too scary for me. I couldn't stop shaking!</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">Actually, I thought it was really funny. I loved it. Definitely the best of all the ones we watched.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">好，說吧。給我們最近看的這幾部電影一個誠實的評價。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">好，我先說。那部紀錄片真的讓我深思，也引發了很多不同的問題。真的非常引人入勝。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">真的嗎？我有時候跟不上——你必須全神貫注才能掌握劇情和人物關係。老實說我不確定我是否都看懂了。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">嗯，兩位主角之間的關係處理得很美，幾乎讓我哭出來。真的很感人。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">有些場景真的讓我嚇到——我坐在椅子邊緣，嚇到不敢看。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">我一個人去看的，我的皮膚都起雞皮疙瘩了，但就是沒辦法移開視線，完全被吸進去了。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">那部大型動作片呢？真的太爛了，我無聊到睡著。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">我也是！不過我一直在笑——真的太荒謬了。裡面很多暴力和血腥，真的很難看下去。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">那部恐怖片呢？對我來說太嚇了，我一直在抖！</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">其實，我覺得它很好笑。我很喜歡，絕對是我們看的那幾部裡面最好的。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S10.5 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 10.5</span>
+        <div class="rec-title">Midnight in Paris — 電影介紹</div>
+      </div>
+      <div class="rec-subtitle">Woody Allen's 2011 film about nostalgia, time travel to 1920s Paris, and the impossibility of living in the past.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/10.5.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="narr"><div class="narr-en">Midnight in Paris is a 2011 romantic comedy written and directed by Woody Allen, starring Owen Wilson, Rachel McAdams, and Marion Cotillard.</div></div>
+          <div class="narr"><div class="narr-en">The main character, Gil Pender — played by Owen Wilson — is a successful Hollywood screenwriter who is vacationing in Paris with his fiancée. Gil is unhappy with his life and dreams of living in Paris in the 1920s, which he sees as a golden age of art and literature.</div></div>
+          <div class="narr"><div class="narr-en">One night, as he is walking alone through the streets of Paris, a vintage car stops at midnight and takes him back in time to the 1920s. There, he meets some of the most famous artists and writers of the era — Pablo Picasso, Ernest Hemingway, F. Scott Fitzgerald, and Salvador Dalí.</div></div>
+          <div class="narr"><div class="narr-en">He also falls in love with a beautiful woman named Adriana, who was one of Picasso's former girlfriends. But Adriana herself dreams of an even earlier era — the Belle Époque of the 1890s.</div></div>
+          <div class="narr"><div class="narr-en">The film explores the theme of nostalgia — the belief that the past was always better than the present. By the end, Gil realizes that every generation romanticizes a time before their own, and that the key to happiness is to embrace the present, not escape into an imagined golden age.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="narr"><div class="narr-zh">《午夜巴黎》是一部 2011 年的浪漫喜劇，由伍迪·艾倫編劇並執導，主演為歐文·威爾遜、瑞秋·麥亞當斯和瑪麗詠·柯蒂亞。</div></div>
+          <div class="narr"><div class="narr-zh">主角吉爾·潘德（歐文·威爾遜飾）是一位成功的好萊塢編劇，正與未婚妻在巴黎度假。吉爾對自己的生活感到不滿，夢想著住在 1920 年代的巴黎，他認為那是藝術與文學的黃金時代。</div></div>
+          <div class="narr"><div class="narr-zh">某天夜晚，他獨自漫步在巴黎街頭，午夜時分，一輛老式轎車停了下來，把他帶回了 1920 年代。在那裡，他遇見了那個時代最著名的一些藝術家和作家，包括畢卡索、海明威、費茲傑羅和薩爾瓦多·達利。</div></div>
+          <div class="narr"><div class="narr-zh">他也愛上了一位美麗的女子阿德里亞娜，她曾是畢卡索的舊情人。但阿德里亞娜自己卻夢想著更早的年代——1890 年代的美好時光（Belle Époque）。</div></div>
+          <div class="narr"><div class="narr-zh">這部電影探討了「懷舊」的主題——認為過去永遠比現在更美好的信念。到了結尾，吉爾意識到每個時代的人都在浪漫化自己出生之前的那個年代，而幸福的關鍵在於擁抱當下，而非逃入想像中的黃金年代。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S10.8 -->
+  <div class="rec-card">
+    <div class="rec-header">
+      <div class="rec-meta">
+        <span class="rec-badge">S 10.8</span>
+        <div class="rec-title">紐約格林威治村導覽</div>
+      </div>
+      <div class="rec-subtitle">A walking tour of Greenwich Village — Washington Square Arch, NYU, Stonewall Inn, and Café Reggio.</div>
+    </div>
+
+    <div class="audio-row">
+      <span class="audio-icon">🎧</span>
+      <audio controls>
+        <source src="audio/10.8.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="bilingual">
+      <div class="bi-headers">
+        <div class="bi-hd">English Original</div>
+        <div class="bi-hd">中文翻譯</div>
+      </div>
+      <div class="bi-body">
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Let's walk over to Washington Square Park and then come back to Café Reggio. OK, so in front of us is the Washington Square Arch. It was built to celebrate the hundredth anniversary of the inauguration of George Washington as the first president of the United States.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">Wow! It's impressive.</div></div>
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Yeah, apparently it can sway two to three inches in the wind! Greenwich Village has always been a center of artistic life — very bohemian. Some of the most famous artists and writers have lived here.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">Do students come here too?</div></div>
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Oh, absolutely. New York University is right here, and students fill the park in good weather. We can actually go inside if we're quick — the biggest room can seat somewhere in the region of 500 students.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">What's the Stonewall Inn? Is that a pub?</div></div>
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Yes, it's a historic bar. It's where the modern LGBTQ rights movement began, back in 1969. Extremely important historically.</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-en">And Café Reggio over there — how old is it?</div></div>
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Café Reggio has been here since 1927. It's one of the most famous cafés in New York and supposedly introduced the cappuccino to America. A great place to stop for coffee.</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-en">Interesting — the statue disappeared at the time of his death.</div></div>
+          <div class="spk"><div class="spk-name">GUIDE</div><div class="spk-en">Surprisingly, no one has ever tried to find it.</div></div>
+        </div>
+        <div class="bi-col">
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">我們走去華盛頓廣場公園，然後再回到雷吉奧咖啡廳。好，我們面前這個是華盛頓廣場拱門。它是為了紀念喬治·華盛頓就任美國第一任總統一百週年而建造的。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">哇！真的很壯觀。</div></div>
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">對啊，據說它在風中可以搖擺兩到三英寸！格林威治村一直是藝術生活的中心——非常有波希米亞風格。許多最知名的藝術家和作家都曾住在這裡。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">學生也會來這裡嗎？</div></div>
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">當然。紐約大學就在這附近，天氣好的時候學生們會把公園坐滿。如果動作快的話我們可以進去參觀——最大的那間教室可以容納大約五百名學生。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">那個 Stonewall Inn 是什麼？是一間酒吧嗎？</div></div>
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">是的，那是一間有歷史的酒吧。1969 年，現代 LGBTQ 權利運動就是從那裡開始的。在歷史上非常重要。</div></div>
+          <div class="spk"><div class="spk-name">B</div><div class="spk-zh">那邊那間雷吉奧咖啡廳有多久歷史了？</div></div>
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">雷吉奧咖啡廳從 1927 年就在這裡了。它是紐約最著名的咖啡廳之一，據說還把卡布奇諾引進了美國。是個喝咖啡的好地方。</div></div>
+          <div class="spk"><div class="spk-name">A</div><div class="spk-zh">有趣——那座雕像在他去世時消失了。</div></div>
+          <div class="spk"><div class="spk-name">導覽員</div><div class="spk-zh">奇怪的是，從來沒有人試圖尋找它。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /u10 -->
+
+</main>
+
+<script>
+function setTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
