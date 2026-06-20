@@ -302,6 +302,156 @@
       text-align: center; padding: 48px 20px;
       color: #9ca3af; font-size: 14px; display: none;
     }
+
+    /* ── Star / Mark ── */
+    .star-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; padding: 0 2px; color: #d1d5db;
+      transition: color .15s; line-height: 1; display: block; margin: 0 auto;
+    }
+    .star-btn.marked { color: #f59e0b; }
+    .star-btn:hover { color: #f59e0b; }
+    tr.marked-row > td { background: #fffdf0 !important; }
+
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; padding: 5px 14px; border-radius: 20px;
+      border: 1px solid #e5e7eb; background: #fff; cursor: pointer;
+      color: #6b7280; font-family: inherit; margin-bottom: 20px;
+      transition: all .15s;
+    }
+    .filter-chip.active { background: #fef3c7; border-color: #f59e0b; color: #d97706; font-weight: 500; }
+    .filter-chip-count { font-weight: 600; }
+
+    /* ── Practice modes ── */
+    .practice-modes {
+      display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .mode-btn {
+      padding: 8px 22px; border-radius: 8px; border: 1px solid #e5e7eb;
+      background: #fff; cursor: pointer; font-family: inherit;
+      font-size: 14px; font-weight: 500; color: #6b7280;
+      transition: all .15s;
+    }
+    .mode-btn.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+
+    .flashcard-area, .quiz-area { display: none; }
+    .flashcard-area.visible, .quiz-area.visible { display: block; }
+
+    /* ── Flashcard ── */
+    .card-options {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
+    }
+    .card-opt-btn {
+      font-size: 12px; padding: 5px 14px; border-radius: 20px;
+      border: 1px solid #e5e7eb; background: #fff; cursor: pointer;
+      font-family: inherit; color: #6b7280; transition: all .15s;
+    }
+    .card-opt-btn.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+
+    .card-wrap { perspective: 1000px; max-width: 480px; margin: 0 auto 20px; }
+    .card {
+      width: 100%; height: 220px; position: relative;
+      transform-style: preserve-3d; transition: transform .45s;
+      cursor: pointer;
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; inset: 0;
+      border: 1px solid #e5e7eb; border-radius: 16px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      backface-visibility: hidden; padding: 24px; text-align: center;
+    }
+    .card-front { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+    .card-back { background: #f9fafb; transform: rotateY(180deg); }
+    .card-en-word { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: #1e3a5f; }
+    .card-en-small { font-family: 'DM Mono', monospace; font-size: 14px; color: #9ca3af; margin-bottom: 6px; }
+    .card-zh-word { font-size: 20px; color: #111; margin-top: 6px; }
+    .card-note-disp { font-size: 13px; color: #9ca3af; margin-top: 8px; font-style: italic; }
+    .card-hint { font-size: 12px; color: #c4c9d4; margin-top: 16px; }
+
+    .card-controls {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      max-width: 480px; margin: 0 auto 12px;
+    }
+    .card-nav-btn {
+      padding: 8px 20px; border-radius: 8px; border: 1px solid #e5e7eb;
+      background: #fff; cursor: pointer; font-family: inherit;
+      font-size: 14px; color: #374151; transition: all .15s;
+    }
+    .card-nav-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+    .card-counter { font-size: 14px; color: #9ca3af; min-width: 60px; text-align: center; }
+
+    /* ── Quiz ── */
+    .quiz-progress {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px; max-width: 620px; margin-left: auto; margin-right: auto;
+    }
+    .quiz-prog-bar { flex: 1; height: 4px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+    .quiz-prog-fill { height: 100%; background: #1e3a5f; border-radius: 4px; transition: width .35s; }
+    .quiz-prog-label { font-size: 13px; color: #9ca3af; white-space: nowrap; }
+
+    .quiz-card {
+      border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden;
+      max-width: 620px; margin: 0 auto 16px;
+    }
+    .quiz-passage {
+      background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+      padding: 24px 28px; font-size: 16px; line-height: 2; color: #374151;
+      font-style: italic;
+    }
+    .quiz-blank {
+      display: inline-block; border-bottom: 2px solid #1e3a5f;
+      min-width: 100px; text-align: center;
+      color: #1e3a5f; font-weight: 600; font-style: normal;
+      padding: 0 4px;
+    }
+    .quiz-choices { padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; }
+    .choice-btn {
+      padding: 11px 16px; border: 1px solid #e5e7eb; border-radius: 8px;
+      background: #fff; cursor: pointer; font-family: inherit;
+      font-size: 14px; color: #374151; text-align: left;
+      transition: all .15s; display: flex; align-items: center; gap: 10px;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: #1e3a5f; background: #f8faff; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.correct { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+    .choice-btn.wrong   { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+    .choice-letter {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #9ca3af; flex-shrink: 0;
+    }
+    .choice-btn.correct .choice-letter { border-color: #16a34a; background: #16a34a; color: #fff; }
+    .choice-btn.wrong   .choice-letter { border-color: #dc2626; background: #dc2626; color: #fff; }
+
+    .quiz-feedback {
+      padding: 12px 28px; font-size: 13px; color: #6b7280;
+      border-top: 1px solid #f3f4f6; display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.right-fb { color: #16a34a; }
+    .quiz-feedback.wrong-fb { color: #dc2626; }
+
+    .quiz-next-btn {
+      display: none; margin: 0 auto 8px; padding: 10px 32px;
+      border-radius: 8px; border: none; background: #1e3a5f;
+      color: #fff; font-family: inherit; font-size: 14px; font-weight: 500;
+      cursor: pointer; opacity: .9; transition: opacity .15s;
+    }
+    .quiz-next-btn:hover { opacity: 1; }
+    .quiz-next-btn.show { display: block; }
+
+    .quiz-result { text-align: center; padding: 48px 24px; display: none; }
+    .quiz-result.show { display: block; }
+    .quiz-score { font-size: 52px; font-weight: 700; color: #1e3a5f; font-family: 'DM Mono', monospace; }
+    .quiz-score-label { font-size: 15px; color: #6b7280; margin-top: 6px; }
+    .quiz-restart-btn {
+      margin-top: 24px; padding: 10px 32px; border-radius: 8px;
+      border: 1px solid #1e3a5f; background: #fff; color: #1e3a5f;
+      font-family: inherit; font-size: 14px; cursor: pointer; transition: all .15s;
+    }
+    .quiz-restart-btn:hover { background: #1e3a5f; color: #fff; }
   </style>
 </head>
 <body>
@@ -330,6 +480,7 @@
     <button class="tab-btn" onclick="setTab('grammar')">文法表 <span class="tab-count">2</span></button>
     <button class="tab-btn" onclick="setTab('listening')">聽力題 <span class="tab-count">4</span></button>
     <button class="tab-btn" onclick="setTab('phrases')">片語表 <span class="tab-count">20+</span></button>
+    <button class="tab-btn" onclick="setTab('practice')" id="tab-practice">練習 <span class="tab-count" id="marked-tab-count">0★</span></button>
   </div>
 </nav>
 
@@ -339,6 +490,9 @@
   <!-- ════════════════ VOCAB ════════════════ -->
   <div class="section active" id="sec-vocab">
     <p class="sec-title">Vocabulary — 單字表</p>
+    <button class="filter-chip" id="mark-filter-chip" onclick="toggleMarkFilter()">
+      ★ 只看不熟 <span class="filter-chip-count" id="mark-filter-count">0</span>
+    </button>
 
     <!-- 電影形容詞 -->
     <div class="topic-group">
@@ -883,10 +1037,81 @@
 
   </div>
 
+  <!-- ════════════════ PRACTICE ════════════════ -->
+  <div class="section" id="sec-practice">
+    <p class="sec-title">Practice — 練習模式</p>
+
+    <div class="practice-modes">
+      <button class="mode-btn active" id="mode-btn-flash" onclick="switchMode('flash')">★ 單字圖卡</button>
+      <button class="mode-btn" id="mode-btn-quiz" onclick="switchMode('quiz')">✎ 克漏字測驗</button>
+    </div>
+
+    <!-- ── Flashcard ── -->
+    <div class="flashcard-area visible" id="flashcard-area">
+      <div class="card-options">
+        <button class="card-opt-btn active" id="opt-all" onclick="setDeckFilter('all')">全部單字</button>
+        <button class="card-opt-btn" id="opt-marked" onclick="setDeckFilter('marked')">只練不熟 ★</button>
+      </div>
+
+      <div class="card-wrap">
+        <div class="card" id="flash-card" onclick="flipCard()">
+          <div class="card-face card-front">
+            <div class="card-en-word" id="flash-en">—</div>
+            <div class="card-hint">點擊翻面查看中文 ↩</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-en-small" id="flash-en-back"></div>
+            <div class="card-zh-word" id="flash-zh">—</div>
+            <div class="card-note-disp" id="flash-note"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-controls">
+        <button class="card-nav-btn" onclick="prevCard()">← 上一張</button>
+        <span class="card-counter" id="flash-counter">0 / 0</span>
+        <button class="card-nav-btn" onclick="nextCard()">下一張 →</button>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <button class="card-nav-btn" onclick="buildDeck()" style="font-size:12px;color:#9ca3af;border-color:#f3f4f6;">🔀 重新洗牌</button>
+      </div>
+
+      <div id="flash-empty" style="text-align:center;padding:48px;color:#9ca3af;font-size:14px;display:none;">
+        沒有標記為不熟的單字。<br>請先在「單字表」中點擊 ★ 標記單字。
+      </div>
+    </div>
+
+    <!-- ── Quiz ── -->
+    <div class="quiz-area" id="quiz-area">
+      <div class="quiz-progress">
+        <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="quiz-prog-fill" style="width:0%"></div></div>
+        <span class="quiz-prog-label" id="quiz-prog-label">0 / 12</span>
+      </div>
+
+      <div id="quiz-question-wrap">
+        <div class="quiz-card">
+          <div class="quiz-passage" id="quiz-passage"></div>
+          <div class="quiz-choices" id="quiz-choices"></div>
+          <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+        <div style="text-align:center">
+          <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuestion()">下一題 →</button>
+        </div>
+      </div>
+
+      <div class="quiz-result" id="quiz-result">
+        <div class="quiz-score" id="quiz-score">0 / 12</div>
+        <div class="quiz-score-label">答對題數</div>
+        <div style="margin-top:14px;font-size:14px;color:#6b7280;" id="quiz-result-msg"></div>
+        <button class="quiz-restart-btn" onclick="startQuiz()">再練一次</button>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
-  // Tab switching
+  // ── Tab switching ──
   function setTab(name) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -894,25 +1119,22 @@
     document.getElementById('sec-' + name).classList.add('active');
     document.getElementById('search-input').value = '';
     clearSearch();
+    if (name === 'practice') buildDeck();
   }
 
-  // Search
+  // ── Search ──
   document.getElementById('search-input').addEventListener('input', function() {
+    updateRowVisibility();
     const q = this.value.toLowerCase().trim();
-    if (!q) { clearSearch(); return; }
-    // search table rows
-    document.querySelectorAll('.data-table tbody tr, .phrase-item, .qa-row').forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.classList.toggle('hidden-row', !text.includes(q));
-    });
-    // hide topic groups with no visible rows
-    document.querySelectorAll('.topic-group').forEach(group => {
-      const visible = group.querySelectorAll('tr:not(.hidden-row):not(:first-child), .phrase-item:not(.hidden-row)');
-      group.style.display = visible.length === 0 ? 'none' : '';
-    });
-    // hide listen cards
     document.querySelectorAll('.listen-card').forEach(card => {
-      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+      card.style.display = card.textContent.toLowerCase().includes(q) || !q ? '' : 'none';
+    });
+    document.querySelectorAll('.phrase-item, .qa-row').forEach(row => {
+      row.classList.toggle('hidden-row', !!q && !row.textContent.toLowerCase().includes(q));
+    });
+    document.querySelectorAll('.topic-group').forEach(group => {
+      const vis = group.querySelectorAll('tr:not(.hidden-row):not(:first-child), .phrase-item:not(.hidden-row)');
+      group.style.display = vis.length === 0 ? 'none' : '';
     });
   });
 
@@ -920,7 +1142,241 @@
     document.querySelectorAll('.hidden-row').forEach(r => r.classList.remove('hidden-row'));
     document.querySelectorAll('.topic-group').forEach(g => g.style.display = '');
     document.querySelectorAll('.listen-card').forEach(c => c.style.display = '');
+    updateRowVisibility();
   }
+
+  // ── Star / Mark ──
+  const MARKS_KEY = 'ijw_marked_words';
+  let markedWords = new Set(JSON.parse(localStorage.getItem(MARKS_KEY) || '[]'));
+
+  function saveMarks() {
+    localStorage.setItem(MARKS_KEY, JSON.stringify([...markedWords]));
+    updateMarkUI();
+  }
+
+  function updateMarkUI() {
+    const n = markedWords.size;
+    document.getElementById('mark-filter-count').textContent = n;
+    document.getElementById('marked-tab-count').textContent = n + '★';
+  }
+
+  function initStars() {
+    document.querySelectorAll('.data-table').forEach(table => {
+      const th = document.createElement('th');
+      th.style.cssText = 'width:32px;text-align:center;';
+      table.querySelector('thead tr').prepend(th);
+
+      table.querySelectorAll('tbody tr').forEach(row => {
+        const wordEl = row.querySelector('.word-en');
+        if (!wordEl) return;
+        const word = wordEl.textContent.trim();
+        const td = document.createElement('td');
+        td.style.cssText = 'text-align:center;padding:0 6px;';
+        const btn = document.createElement('button');
+        btn.className = 'star-btn' + (markedWords.has(word) ? ' marked' : '');
+        btn.textContent = '★';
+        btn.title = '標記為不熟';
+        if (markedWords.has(word)) row.classList.add('marked-row');
+        btn.onclick = e => {
+          e.stopPropagation();
+          if (markedWords.has(word)) {
+            markedWords.delete(word);
+            btn.classList.remove('marked');
+            row.classList.remove('marked-row');
+          } else {
+            markedWords.add(word);
+            btn.classList.add('marked');
+            row.classList.add('marked-row');
+          }
+          saveMarks();
+          if (showOnlyMarked) updateRowVisibility();
+        };
+        td.appendChild(btn);
+        row.prepend(td);
+      });
+    });
+    updateMarkUI();
+  }
+
+  // ── Mark filter ──
+  let showOnlyMarked = false;
+
+  function toggleMarkFilter() {
+    showOnlyMarked = !showOnlyMarked;
+    document.getElementById('mark-filter-chip').classList.toggle('active', showOnlyMarked);
+    updateRowVisibility();
+    document.querySelectorAll('.topic-group').forEach(group => {
+      const vis = group.querySelectorAll('tr:not(.hidden-row):not(:first-child)');
+      group.style.display = vis.length === 0 ? 'none' : '';
+    });
+  }
+
+  function updateRowVisibility() {
+    const q = document.getElementById('search-input').value.toLowerCase().trim();
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+      const textOk = !q || row.textContent.toLowerCase().includes(q);
+      const markOk = !showOnlyMarked || row.classList.contains('marked-row');
+      row.classList.toggle('hidden-row', !(textOk && markOk));
+    });
+  }
+
+  // ── Flashcard ──
+  let flashDeck = [], flashIdx = 0, flashOnlyMarked = false;
+
+  function getAllVocab() {
+    const words = [];
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+      const en = row.querySelector('.word-en')?.textContent.trim();
+      const zh = row.querySelector('.word-zh')?.textContent.trim();
+      const note = row.querySelector('.word-note')?.textContent.trim() || '';
+      if (en && zh) words.push({ en, zh, note });
+    });
+    return words;
+  }
+
+  function setDeckFilter(mode) {
+    flashOnlyMarked = mode === 'marked';
+    document.getElementById('opt-all').classList.toggle('active', !flashOnlyMarked);
+    document.getElementById('opt-marked').classList.toggle('active', flashOnlyMarked);
+    buildDeck();
+  }
+
+  function buildDeck() {
+    const all = getAllVocab();
+    const pool = flashOnlyMarked ? all.filter(w => markedWords.has(w.en)) : all;
+    // Fisher-Yates shuffle
+    flashDeck = [...pool];
+    for (let i = flashDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [flashDeck[i], flashDeck[j]] = [flashDeck[j], flashDeck[i]];
+    }
+    flashIdx = 0;
+    const empty = flashDeck.length === 0;
+    document.getElementById('flash-empty').style.display = empty ? '' : 'none';
+    document.getElementById('flash-card').parentElement.style.display = empty ? 'none' : '';
+    document.querySelector('.card-controls').style.display = empty ? 'none' : '';
+    if (!empty) showCard();
+  }
+
+  function showCard() {
+    const card = document.getElementById('flash-card');
+    card.classList.remove('flipped');
+    const w = flashDeck[flashIdx];
+    document.getElementById('flash-en').textContent = w.en;
+    document.getElementById('flash-en-back').textContent = w.en;
+    document.getElementById('flash-zh').textContent = w.zh;
+    document.getElementById('flash-note').textContent = w.note;
+    document.getElementById('flash-counter').textContent = `${flashIdx + 1} / ${flashDeck.length}`;
+  }
+
+  function flipCard() { document.getElementById('flash-card').classList.toggle('flipped'); }
+  function nextCard() { flashIdx = (flashIdx + 1) % flashDeck.length; showCard(); }
+  function prevCard() { flashIdx = (flashIdx - 1 + flashDeck.length) % flashDeck.length; showCard(); }
+
+  // ── Quiz ──
+  const quizData = [
+    { passage: 'He stopped _____ because he was tired.', answer: 'driving', options: ['driving','to drive','drive','driven'], explain: 'stop doing = 停止做某事（結束）' },
+    { passage: 'Remember _____ the door before you leave.', answer: 'to lock', options: ['to lock','locking','lock','locked'], explain: 'remember to do = 記得要做（提醒自己）' },
+    { passage: "I'll never forget _____ that film for the first time.", answer: 'watching', options: ['watching','to watch','watch','watched'], explain: 'forget doing = 忘不了曾做過的事（難忘回憶）' },
+    { passage: 'She tried _____ the aspirin to see if it would help.', answer: 'taking', options: ['taking','to take','take','taken'], explain: 'try doing = 嘗試做看看（實驗性）' },
+    { passage: 'Billy went on _____ every day for years.', answer: 'practicing', options: ['practicing','to practice','practice','practiced'], explain: 'go on doing = 繼續做同一件事' },
+    { passage: 'I regret _____ you that your application was unsuccessful.', answer: 'to inform', options: ['to inform','informing','inform','informed'], explain: 'regret to do = 遺憾地做某事（正式通知）' },
+    { passage: 'It _____ while I was looking at the other picture.', answer: 'must have been stolen', options: ['must have been stolen','should have been stolen','might be stolen','was stolen'], explain: 'must have + p.p. = 一定有…（強烈正面推測）' },
+    { passage: "She _____ it — she was working with me the whole afternoon.", answer: "couldn't have taken", options: ["couldn't have taken","must have taken","might have taken","should have taken"], explain: "can't/couldn't have + p.p. = 不可能有…（強烈否定推測）" },
+    { passage: 'The horror film was so _____ that I checked under my bed before sleeping.', answer: 'creepy', options: ['creepy','hilarious','touching','poignant'], explain: 'creepy = 令人毛骨悚然的' },
+    { passage: 'The documentary was very _____ — it made me question a lot about society.', answer: 'thought-provoking', options: ['thought-provoking','hysterical','gory','fast-paced'], explain: 'thought-provoking = 發人深省的' },
+    { passage: 'He was arrested for _____ — he had been following the celebrity for months.', answer: 'stalking', options: ['stalking','mugging','vandalism','bribery'], explain: 'stalking = 跟蹤騷擾' },
+    { passage: "Breaking into someone's computer system without permission is called _____.", answer: 'hacking', options: ['hacking','counterfeiting','arson','shoplifting'], explain: 'hacking = 駭客入侵' },
+    { passage: 'She was _____ to music from a young age and practiced for hours every day.', answer: 'addicted', options: ['addicted','outstanding','assertive','diplomatic'], explain: 'addicted to = 對…上癮的' },
+    { passage: 'The performer went to three _____ before finally getting the role.', answer: 'auditions', options: ['auditions','vibrations','portfolios','scripts'], explain: 'audition = 試鏡、試音' },
+    { passage: 'The company was investigated for _____ after officials accepted secret payments.', answer: 'bribery', options: ['bribery','fraud','mugging','hacking'], explain: 'bribery = 賄賂' },
+  ];
+
+  let quizOrder = [], quizCurrent = 0, quizScore = 0;
+
+  function switchMode(mode) {
+    document.getElementById('mode-btn-flash').classList.toggle('active', mode === 'flash');
+    document.getElementById('mode-btn-quiz').classList.toggle('active', mode === 'quiz');
+    document.getElementById('flashcard-area').classList.toggle('visible', mode === 'flash');
+    document.getElementById('quiz-area').classList.toggle('visible', mode === 'quiz');
+    if (mode === 'quiz') startQuiz();
+  }
+
+  function startQuiz() {
+    quizOrder = [...Array(quizData.length).keys()];
+    for (let i = quizOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [quizOrder[i], quizOrder[j]] = [quizOrder[j], quizOrder[i]];
+    }
+    quizCurrent = 0; quizScore = 0;
+    document.getElementById('quiz-result').classList.remove('show');
+    document.getElementById('quiz-question-wrap').style.display = '';
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const total = quizData.length;
+    const pct = (quizCurrent / total) * 100;
+    document.getElementById('quiz-prog-fill').style.width = pct + '%';
+    document.getElementById('quiz-prog-label').textContent = `${quizCurrent} / ${total}`;
+
+    const q = quizData[quizOrder[quizCurrent]];
+    const passage = q.passage.replace('_____', '<span class="quiz-blank">_____</span>');
+    document.getElementById('quiz-passage').innerHTML = passage;
+
+    const opts = [...q.options].sort(() => Math.random() - .5);
+    const letters = ['A','B','C','D'];
+    const choicesEl = document.getElementById('quiz-choices');
+    choicesEl.innerHTML = '';
+    opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span class="choice-letter">${letters[i]}</span>${opt}`;
+      btn.onclick = () => answerQuestion(opt, q.answer, q.explain, opts);
+      choicesEl.appendChild(btn);
+    });
+
+    const fb = document.getElementById('quiz-feedback');
+    fb.className = 'quiz-feedback'; fb.textContent = '';
+    document.getElementById('quiz-next-btn').className = 'quiz-next-btn';
+  }
+
+  function answerQuestion(chosen, answer, explain, opts) {
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.disabled = true;
+      const text = btn.textContent.slice(1).trim();
+      if (text === answer) btn.classList.add('correct');
+      else if (text === chosen && chosen !== answer) btn.classList.add('wrong');
+    });
+
+    const correct = chosen === answer;
+    if (correct) quizScore++;
+    const fb = document.getElementById('quiz-feedback');
+    fb.className = 'quiz-feedback show ' + (correct ? 'right-fb' : 'wrong-fb');
+    fb.textContent = (correct ? '✓ 答對！' : `✗ 正確答案是「${answer}」`) + '　' + explain;
+    document.getElementById('quiz-next-btn').className = 'quiz-next-btn show';
+  }
+
+  function nextQuestion() {
+    quizCurrent++;
+    if (quizCurrent >= quizData.length) {
+      document.getElementById('quiz-question-wrap').style.display = 'none';
+      document.getElementById('quiz-result').classList.add('show');
+      document.getElementById('quiz-score').textContent = `${quizScore} / ${quizData.length}`;
+      const pct = Math.round(quizScore / quizData.length * 100);
+      let msg = pct === 100 ? '🎉 全對！太厲害了！' : pct >= 80 ? '👍 表現很好，繼續加油！' : pct >= 60 ? '📖 還有一些要複習，再練練看！' : '💪 多練幾次，你可以的！';
+      document.getElementById('quiz-result-msg').textContent = msg;
+      document.getElementById('quiz-prog-fill').style.width = '100%';
+      document.getElementById('quiz-prog-label').textContent = `${quizData.length} / ${quizData.length}`;
+    } else {
+      showQuestion();
+    }
+  }
+
+  // ── Init ──
+  document.addEventListener('DOMContentLoaded', () => {
+    initStars();
+  });
 </script>
 </body>
 </html>
