@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英文期末整理</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      background: #fff;
+      color: #111;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 40px;
+    }
+    .header-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; align-items: center; gap: 12px;
+      height: 60px;
+    }
+    .logo { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500; color: #1e3a5f; }
+    .logo span { font-weight: 300; }
+    .divider { color: #d1d5db; }
+    .subtitle { color: #6b7280; font-size: 14px; }
+    .search-wrap { margin-left: auto; position: relative; }
+    .search-wrap input {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 6px 12px 6px 34px;
+      font-size: 13px;
+      font-family: inherit;
+      width: 200px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .search-wrap input:focus { border-color: #1e3a5f; }
+    .search-wrap svg {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      width: 15px; height: 15px; color: #9ca3af; pointer-events: none;
+    }
+
+    /* ── Nav Tabs ── */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 40px;
+    }
+    .nav-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: flex; gap: 0;
+    }
+    .tab-btn {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      color: #6b7280;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #1e3a5f; }
+    .tab-btn.active { color: #1e3a5f; border-bottom-color: #1e3a5f; }
+    .tab-count {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #6b7280;
+      font-size: 11px;
+      border-radius: 10px;
+      padding: 1px 6px;
+      margin-left: 4px;
+      font-weight: 400;
+    }
+    .tab-btn.active .tab-count { background: #eef3f9; color: #1e3a5f; }
+
+    /* ── Main ── */
+    main { max-width: 1000px; margin: 0 auto; padding: 40px 40px 80px; }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Section header */
+    .sec-title {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: #9ca3af;
+      margin-bottom: 24px;
+    }
+
+    /* Topic group */
+    .topic-group { margin-bottom: 48px; }
+    .topic-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3a5f;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topic-tag {
+      font-size: 11px; font-weight: 400;
+      background: #eef3f9; color: #1e3a5f;
+      border-radius: 6px; padding: 2px 8px;
+      font-family: 'DM Mono', monospace;
+      text-transform: none; letter-spacing: 0;
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 10px 16px;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .data-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafafa; }
+    .data-table tbody { border: 1px solid #e5e7eb; border-radius: 10px; }
+    .table-wrap {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .word-en { font-family: 'DM Mono', monospace; font-weight: 500; color: #111; }
+    .word-zh { color: #374151; }
+    .word-note { color: #9ca3af; font-size: 13px; font-style: italic; }
+    .word-ex { color: #6b7280; font-size: 13px; font-style: italic; margin-top: 3px; }
+
+    /* POS badge */
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .badge-n   { background:#eff6ff; color:#2563eb; border-color:#bfdbfe; }
+    .badge-v   { background:#f0fdf4; color:#16a34a; border-color:#bbf7d0; }
+    .badge-adj { background:#faf5ff; color:#7c3aed; border-color:#e9d5ff; }
+    .badge-adv { background:#fffbeb; color:#d97706; border-color:#fde68a; }
+    .badge-phr { background:#fff7ed; color:#ea580c; border-color:#fed7aa; }
+    .badge-id  { background:#fdf2f8; color:#be185d; border-color:#fbcfe8; }
+
+    /* Grammar rule cards */
+    .rule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 680px) { .rule-grid { grid-template-columns: 1fr; } }
+    .rule-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .rule-card-header {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3a5f;
+      font-family: 'DM Mono', monospace;
+    }
+    .rule-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .rule-cell {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .rule-cell:nth-child(2) { border-left: 1px solid #f3f4f6; }
+    .rule-cell:last-child, .rule-cell:nth-last-child(2) { border-bottom: none; }
+    .rule-form { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #1e3a5f; }
+    .rule-meaning { font-size: 13px; color: #374151; margin-top: 4px; }
+    .rule-ex { font-size: 12px; color: #9ca3af; margin-top: 4px; font-style: italic; }
+
+    /* Modal table */
+    .modal-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .modal-table th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 600;
+      color: #9ca3af; text-transform: uppercase; letter-spacing: .08em;
+      background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    }
+    .modal-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .modal-table tr:last-child td { border-bottom: none; }
+    .modal-table tr:hover td { background: #fafafa; }
+    .cert-hi  { color: #16a34a; font-weight: 600; }
+    .cert-mid { color: #d97706; font-weight: 600; }
+    .cert-lo  { color: #dc2626; font-weight: 600; }
+
+    /* Listening cards */
+    .listen-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .listen-header {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .listen-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      background: #1e3a5f; color: #fff;
+      border-radius: 6px; padding: 3px 9px;
+    }
+    .listen-title { font-weight: 600; font-size: 15px; color: #111; }
+    .listen-sub { font-size: 13px; color: #6b7280; margin-left: auto; }
+    .listen-body { padding: 20px; }
+    .listen-context {
+      font-size: 14px; color: #374151;
+      margin-bottom: 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      border-left: 3px solid #1e3a5f;
+    }
+    .listen-qa { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+    .qa-row {
+      display: grid; grid-template-columns: 28px 1fr;
+      gap: 12px; padding: 12px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 14px; align-items: start;
+    }
+    .qa-row:last-child { border-bottom: none; }
+    .qa-q { font-weight: 700; color: #1e3a5f; }
+    .qa-a { color: #374151; }
+    .qa-label { font-weight: 600; color: #6b7280; font-size: 13px; }
+
+    /* Key phrases */
+    .phrase-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .phrase-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid #f3f4f6;
+      align-items: start;
+    }
+    .phrase-item:last-child { border-bottom: none; }
+    .phrase-en {
+      padding: 12px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px; color: #111; font-weight: 500;
+      border-right: 1px solid #f3f4f6;
+    }
+    .phrase-zh { padding: 12px 16px; font-size: 14px; color: #374151; }
+
+    /* Hidden row */
+    .hidden-row { display: none !important; }
+
+    /* Empty search state */
+    .empty-msg {
+      text-align: center; padding: 48px 20px;
+      color: #9ca3af; font-size: 14px; display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <span class="logo">iji<span>Words</span></span>
+    <span class="divider">／</span>
+    <span class="subtitle">英文期末整理</span>
+    <div class="search-wrap">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="搜尋單字、文法…" />
+    </div>
+  </div>
+</header>
+
+<!-- ── Nav Tabs ── -->
+<nav>
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="setTab('vocab')">單字表 <span class="tab-count">70+</span></button>
+    <button class="tab-btn" onclick="setTab('grammar')">文法表 <span class="tab-count">2</span></button>
+    <button class="tab-btn" onclick="setTab('listening')">聽力題 <span class="tab-count">4</span></button>
+    <button class="tab-btn" onclick="setTab('phrases')">片語表 <span class="tab-count">20+</span></button>
+  </div>
+</nav>
+
+<!-- ── Main ── -->
+<main>
+
+  <!-- ════════════════ VOCAB ════════════════ -->
+  <div class="section active" id="sec-vocab">
+    <p class="sec-title">Vocabulary — 單字表</p>
+
+    <!-- 電影形容詞 -->
+    <div class="topic-group">
+      <div class="topic-title">電影／節目形容詞 <span class="topic-tag">Movie Adjectives</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>補充說明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">fast-paced</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">節奏快的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">touching</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">感人的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">gripping</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">令人著迷的、扣人心弦的</td><td class="word-note">讓人心跳加速</td></tr>
+            <tr><td class="word-en">gory</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">血腥暴力的</td><td class="word-note">bloody + violence</td></tr>
+            <tr><td class="word-en">hysterical</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">非常搞笑的；歇斯底里的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">creepy</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">令人毛骨悚然的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">controversial</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">有爭議的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">full of suspense</td><td><span class="badge badge-phr">phr.</span></td><td class="word-zh">充滿懸疑感的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">outstanding</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">出色的、傑出的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">thought-provoking</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">發人深省的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">hilarious</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">爆笑的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">moving</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">感人的、動人的</td><td class="word-note">= touching</td></tr>
+            <tr><td class="word-en">stunning</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">令人驚豔的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">offensive</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">冒犯的、令人不快的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">poignant</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">令人心酸的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">superb</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">精彩的、極好的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">dramatic</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">戲劇性的</td><td class="word-note"></td></tr>
+            <tr><td class="word-en">intense</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">激烈的、緊張的</td><td class="word-note"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 犯罪單字 -->
+    <div class="topic-group">
+      <div class="topic-title">犯罪 <span class="topic-tag">Crime</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>補充說明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">kidnapping</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">綁架</td><td></td></tr>
+            <tr><td class="word-en">hacking</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">駭客入侵</td><td></td></tr>
+            <tr><td class="word-en">identity theft</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">身份竊盜</td><td></td></tr>
+            <tr><td class="word-en">bribery</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">賄賂</td><td></td></tr>
+            <tr><td class="word-en">arson</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">縱火</td><td class="word-note">to commit arson</td></tr>
+            <tr><td class="word-en">stalking</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">跟蹤騷擾</td><td></td></tr>
+            <tr><td class="word-en">vandalism</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">蓄意破壞公物</td><td></td></tr>
+            <tr><td class="word-en">counterfeiting</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">偽造（鈔票/文件）</td><td></td></tr>
+            <tr><td class="word-en">mugging</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">街頭搶劫</td><td></td></tr>
+            <tr><td class="word-en">shoplifting</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">順手牽羊（商店行竊）</td><td></td></tr>
+            <tr><td class="word-en">scam</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">騙局</td><td class="word-note">informal: clever but dishonest way to get money</td></tr>
+            <tr><td class="word-en">fraud</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">詐欺</td><td></td></tr>
+            <tr><td class="word-en">money launderer</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">洗錢者</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 事故動詞 -->
+    <div class="topic-group">
+      <div class="topic-title">事故動詞片語 <span class="topic-tag">Incidents</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文片語</th><th style="width:80px">詞性</th><th>中文意思</th><th>例句情境</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">fall off</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">從…掉落</td><td class="word-note">fall off the ladder</td></tr>
+            <tr><td class="word-en">get stuck</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">卡住、陷入困境</td><td class="word-note">get stuck in traffic</td></tr>
+            <tr><td class="word-en">knock over</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">撞倒</td><td class="word-note">knock over a lamppost</td></tr>
+            <tr><td class="word-en">break down</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">故障、拋錨</td><td class="word-note">my car broke down</td></tr>
+            <tr><td class="word-en">lock out</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">被鎖在外面</td><td class="word-note">get locked out of the house</td></tr>
+            <tr><td class="word-en">run over</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">輾過、撞倒</td><td class="word-note">be run over by a car</td></tr>
+            <tr><td class="word-en">get knocked out</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">被撞昏</td><td></td></tr>
+            <tr><td class="word-en">be on fire</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">著火</td><td class="word-note">smoke coming from the roof</td></tr>
+            <tr><td class="word-en">steal</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">偷竊（偷走物品）</td><td class="word-note">steal sth from sb</td></tr>
+            <tr><td class="word-en">rob</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">搶劫（搶劫人或地方）</td><td class="word-note">rob a bank / rob sb</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 行為形容詞 -->
+    <div class="topic-group">
+      <div class="topic-title">行為形容詞 <span class="topic-tag">Behavior</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>反義 / 相似字</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">supportive</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">支持的</td><td class="word-note">↔ unhelpful</td></tr>
+            <tr><td class="word-en">unhelpful</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">無益的、不幫忙的</td><td></td></tr>
+            <tr><td class="word-en">diplomatic</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">圓滑的、有外交手腕的</td><td class="word-note">~ tactful</td></tr>
+            <tr><td class="word-en">tactful</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">機智的、得體的</td><td></td></tr>
+            <tr><td class="word-en">sensitive</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">敏感的、體貼的</td><td class="word-note">≠ sensible（明智的）</td></tr>
+            <tr><td class="word-en">sensible</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">明智的、理性的</td><td></td></tr>
+            <tr><td class="word-en">confrontational</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">對抗的、愛起衝突的</td><td class="word-note">↔ collaborative</td></tr>
+            <tr><td class="word-en">collaborative</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">合作的</td><td></td></tr>
+            <tr><td class="word-en">aggressive</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">攻擊性的</td><td class="word-note">↔ assertive（果斷但不衝突）</td></tr>
+            <tr><td class="word-en">assertive</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">果斷的、有自信的</td><td></td></tr>
+            <tr><td class="word-en">direct</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">直接的</td><td class="word-note">~ focused</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 價值觀 -->
+    <div class="topic-group">
+      <div class="topic-title">價值觀 <span class="topic-tag">Values</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>補充</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">aggression</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">侵略性、攻擊行為</td><td></td></tr>
+            <tr><td class="word-en">fairness</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">公平</td><td class="word-note">sense of fairness 公平感</td></tr>
+            <tr><td class="word-en">justice</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">正義、公正</td><td class="word-note">no justice 沒有公正</td></tr>
+            <tr><td class="word-en">equality</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">平等</td><td class="word-note">no equality 不平等</td></tr>
+            <tr><td class="word-en">greed</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">貪婪</td><td class="word-note">greedy adj.</td></tr>
+            <tr><td class="word-en">generosity</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">慷慨</td><td class="word-note">generous adj.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 音樂表演 -->
+    <div class="topic-group">
+      <div class="topic-title">音樂 ／ 表演 <span class="topic-tag">Music &amp; Performance</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:200px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>補充</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">be characterized by</td><td><span class="badge badge-phr">phr.</span></td><td class="word-zh">以…為特徵</td><td></td></tr>
+            <tr><td class="word-en">bass</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">低音</td><td></td></tr>
+            <tr><td class="word-en">rhythm</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">節奏</td><td></td></tr>
+            <tr><td class="word-en">percussion</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">打擊樂</td><td></td></tr>
+            <tr><td class="word-en">amplification</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">擴音</td><td class="word-note">amplify v.</td></tr>
+            <tr><td class="word-en">addicted</td><td><span class="badge badge-adj">adj.</span></td><td class="word-zh">上癮的</td><td class="word-note">addicted to music</td></tr>
+            <tr><td class="word-en">sensation</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">感覺；轟動一時的人事物</td><td></td></tr>
+            <tr><td class="word-en">vibration</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">振動</td><td class="word-note">vibrate v.</td></tr>
+            <tr><td class="word-en">audition</td><td><span class="badge badge-n">n./v.</span></td><td class="word-zh">試鏡、試音</td><td></td></tr>
+            <tr><td class="word-en">have access to</td><td><span class="badge badge-phr">phr.</span></td><td class="word-zh">有管道接觸／使用</td><td></td></tr>
+            <tr><td class="word-en">portfolio</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">作品集</td><td></td></tr>
+            <tr><td class="word-en">resemble</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">與…相似</td><td></td></tr>
+            <tr><td class="word-en">evaluate</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">評估、評價</td><td></td></tr>
+            <tr><td class="word-en">script</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">劇本</td><td></td></tr>
+            <tr><td class="word-en">stand-up comedian</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">單口喜劇演員</td><td></td></tr>
+            <tr><td class="word-en">setting</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">場景、背景</td><td></td></tr>
+            <tr><td class="word-en">orchestra</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">管弦樂團</td><td></td></tr>
+            <tr><td class="word-en">franchise</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">特許經營；系列電影</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 維度 -->
+    <div class="topic-group">
+      <div class="topic-title">維度／尺寸 <span class="topic-tag">Dimensions</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:140px">名詞</th><th style="width:140px">形容詞</th><th>中文</th><th>例句</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">length</td><td class="word-en">long</td><td class="word-zh">長度 / 長的</td><td class="word-note">How long is the road?</td></tr>
+            <tr><td class="word-en">width</td><td class="word-en">wide / broad</td><td class="word-zh">寬度 / 寬的</td><td class="word-note">How wide is the entrance?</td></tr>
+            <tr><td class="word-en">height</td><td class="word-en">high / tall</td><td class="word-zh">高度 / 高的</td><td class="word-note">What is the height of the tower?</td></tr>
+            <tr><td class="word-en">thickness</td><td class="word-en">thick</td><td class="word-zh">厚度 / 厚的</td><td class="word-note">What is the thickness of the wall?</td></tr>
+            <tr><td class="word-en">depth</td><td class="word-en">deep</td><td class="word-zh">深度 / 深的</td><td class="word-note">What's the depth of the water?</td></tr>
+            <tr><td class="word-en">narrowness</td><td class="word-en">narrow</td><td class="word-zh">窄度 / 窄的</td><td class="word-note">The road is narrow here.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 其他重要單字 -->
+    <div class="topic-group">
+      <div class="topic-title">其他重要單字 <span class="topic-tag">Others</span></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:180px">英文</th><th style="width:80px">詞性</th><th>中文意思</th><th>補充</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="word-en">grace</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">優雅</td><td class="word-note">graceful adj.</td></tr>
+            <tr><td class="word-en">commodity</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">商品</td><td></td></tr>
+            <tr><td class="word-en">essentially</td><td><span class="badge badge-adv">adv.</span></td><td class="word-zh">本質上、基本上</td><td></td></tr>
+            <tr><td class="word-en">in place of</td><td><span class="badge badge-phr">phr.</span></td><td class="word-zh">代替、取而代之</td><td></td></tr>
+            <tr><td class="word-en">evolution</td><td><span class="badge badge-n">n.</span></td><td class="word-zh">演化、演變</td><td></td></tr>
+            <tr><td class="word-en">prioritize</td><td><span class="badge badge-v">v.</span></td><td class="word-zh">以…為優先</td><td class="word-note">priority n.</td></tr>
+            <tr><td class="word-en">apparently</td><td><span class="badge badge-adv">adv.</span></td><td class="word-zh">顯然地</td><td class="word-note">surprisingly 令人驚訝地</td></tr>
+            <tr><td class="word-en">interestingly</td><td><span class="badge badge-adv">adv.</span></td><td class="word-zh">有趣的是</td><td></td></tr>
+            <tr><td class="word-en">unfortunately</td><td><span class="badge badge-adv">adv.</span></td><td class="word-zh">不幸地</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="empty-msg" id="vocab-empty">找不到符合的單字</div>
+  </div>
+
+  <!-- ════════════════ GRAMMAR ════════════════ -->
+  <div class="section" id="sec-grammar">
+    <p class="sec-title">Grammar — 文法表</p>
+
+    <!-- V-ing vs To-V -->
+    <div class="topic-group">
+      <div class="topic-title">-ing Form vs Infinitive <span class="topic-tag">動名詞 vs 不定詞</span></div>
+      <p style="font-size:14px;color:#6b7280;margin-bottom:20px;">以下 6 個動詞接 <strong>doing</strong> 與 <strong>to do</strong> 意思完全不同，需特別記憶。</p>
+      <div class="rule-grid">
+
+        <!-- remember -->
+        <div class="rule-card">
+          <div class="rule-card-header">1. remember</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">remember doing</div>
+              <div class="rule-meaning">記得曾做過某事（回憶）</div>
+              <div class="rule-ex">I remember meeting her before.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">remember to do</div>
+              <div class="rule-meaning">記得要去做某事（提醒）</div>
+              <div class="rule-ex">Remember to lock the door.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- forget -->
+        <div class="rule-card">
+          <div class="rule-card-header">2. forget</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">forget doing</div>
+              <div class="rule-meaning">忘記曾做過（事已做）</div>
+              <div class="rule-ex">I'll never forget seeing that film.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">forget to do</div>
+              <div class="rule-meaning">忘記要做（事未做）</div>
+              <div class="rule-ex">I forgot to buy tickets.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- stop -->
+        <div class="rule-card">
+          <div class="rule-card-header">3. stop</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">stop doing</div>
+              <div class="rule-meaning">停止做某事（結束）</div>
+              <div class="rule-ex">He stopped driving because he was tired.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">stop to do</div>
+              <div class="rule-meaning">停下來去做另一件事</div>
+              <div class="rule-ex">He stopped to drink some coffee.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- go on -->
+        <div class="rule-card">
+          <div class="rule-card-header">4. go on</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">go on doing</div>
+              <div class="rule-meaning">繼續做同一件事</div>
+              <div class="rule-ex">Billy went on practicing every day.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">go on to do</div>
+              <div class="rule-meaning">接著做下一件事</div>
+              <div class="rule-ex">Billy went on to become a famous dancer.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- try -->
+        <div class="rule-card">
+          <div class="rule-card-header">5. try</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">try doing</div>
+              <div class="rule-meaning">嘗試做（實驗看看）</div>
+              <div class="rule-ex">Try taking the aspirin.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">try to do</div>
+              <div class="rule-meaning">努力嘗試做（可能很難）</div>
+              <div class="rule-ex">He tried to recall her name.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- regret -->
+        <div class="rule-card">
+          <div class="rule-card-header">6. regret</div>
+          <div class="rule-row">
+            <div class="rule-cell">
+              <div class="rule-form">regret doing</div>
+              <div class="rule-meaning">後悔做了某事</div>
+              <div class="rule-ex">I regret not studying harder.</div>
+            </div>
+            <div class="rule-cell">
+              <div class="rule-form">regret to do</div>
+              <div class="rule-meaning">遺憾地做某事（正式）</div>
+              <div class="rule-ex">We regret to inform you the concert has been cancelled.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Past Modals of Deduction -->
+    <div class="topic-group">
+      <div class="topic-title">Past Modals of Deduction <span class="topic-tag">過去式情態動詞推測</span></div>
+      <p style="font-size:14px;color:#6b7280;margin-bottom:20px;">
+        公式：<strong style="font-family:'DM Mono',monospace">modal + have + p.p.</strong>（過去分詞）
+      </p>
+      <div class="table-wrap">
+        <table class="modal-table">
+          <thead>
+            <tr>
+              <th style="width:220px">句型</th>
+              <th style="width:90px">確信度</th>
+              <th>中文意思</th>
+              <th>例句</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="word-en">must have + p.p.</td>
+              <td><span class="cert-hi">確定（+）</span></td>
+              <td class="word-zh">一定有…（正面推測）</td>
+              <td class="word-note">It must have been stolen when I was looking at the picture.</td>
+            </tr>
+            <tr>
+              <td class="word-en">can't / couldn't have + p.p.</td>
+              <td><span class="cert-hi">確定（−）</span></td>
+              <td class="word-zh">不可能有…（否定推測）</td>
+              <td class="word-note">She couldn't have taken it — she was working with me.</td>
+            </tr>
+            <tr>
+              <td class="word-en">might / could have + p.p.</td>
+              <td><span class="cert-mid">不確定</span></td>
+              <td class="word-zh">可能有…（不確定）</td>
+              <td class="word-note">He might have hidden it in his briefcase.</td>
+            </tr>
+            <tr>
+              <td class="word-en">should have + p.p.</td>
+              <td><span class="cert-lo">應該但沒有</span></td>
+              <td class="word-zh">本應…但沒有（責備）</td>
+              <td class="word-note">I should have been more careful.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:20px;padding:16px 20px;background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb;">
+        <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin-bottom:10px;">推測強度排序</p>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+          <span style="color:#16a34a;font-weight:600">must have</span>
+          <span style="color:#9ca3af">›</span>
+          <span style="color:#d97706;font-weight:600">might / could have</span>
+          <span style="color:#9ca3af">›</span>
+          <span style="color:#dc2626;font-weight:600">can't have</span>
+        </div>
+        <p style="font-size:13px;color:#6b7280;margin-top:8px">被動式：must / might / can't + have been + p.p.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════ LISTENING ════════════════ -->
+  <div class="section" id="sec-listening">
+    <p class="sec-title">Listening — 聽力題整理</p>
+
+    <!-- Unit 8 S8.5 -->
+    <div class="listen-card">
+      <div class="listen-header">
+        <span class="listen-tag">Unit 8 · S8.5</span>
+        <span class="listen-title">Jim &amp; Liz — 借錢還錢</span>
+        <span class="listen-sub">Money</span>
+      </div>
+      <div class="listen-body">
+        <div class="listen-context">
+          情境：Jim 上週向 Liz 借了 $10。Liz 提出「每週還一點點」的分期方式，Jim 認為這聽起來合理。
+        </div>
+        <div class="listen-qa">
+          <div class="qa-row"><span class="qa-q">Q</span><span>Liz owes Jim a small amount of money. <strong>True or False?</strong></span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span><strong>False</strong> — Jim owes Liz $10 (not the other way around).</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>She doesn't always keep her promises. <strong>T or F?</strong></span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span><strong>False</strong> — She does always keep her promises.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>Jim wants her to pay a set amount each week. <strong>T or F?</strong></span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span><strong>True</strong>.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unit 8 S8.8 -->
+    <div class="listen-card">
+      <div class="listen-header">
+        <span class="listen-tag">Unit 8 · S8.8</span>
+        <span class="listen-title">美國打招呼文化 — Names &amp; Greetings</span>
+        <span class="listen-sub">Social Customs</span>
+      </div>
+      <div class="listen-body">
+        <div class="listen-context">
+          情境：主持人介紹美國人見面的習慣 — 通常在正式場合仍用 Mr./Ms. + 姓，但大多數人很快就改用名字（first name）。握手是常見的問候方式。
+        </div>
+        <div class="listen-qa">
+          <div class="qa-row"><span class="qa-label">重點</span><span>美國人在商業場合會先用 Mr./Ms. + last name，但通常很快就換成 first name。</span></div>
+          <div class="qa-row"><span class="qa-label">重點</span><span>Hugging 在朋友之間很常見，但在職場初次見面不建議。</span></div>
+          <div class="qa-row"><span class="qa-label">重點</span><span>Being late（遲到）在美國被視為不禮貌，尤其商業場合。</span></div>
+          <div class="qa-row"><span class="qa-label">重點</span><span>Body language 因文化差異很大，如手勢「OK」在某些國家意思不同。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unit 9 S9.2 -->
+    <div class="listen-card">
+      <div class="listen-header">
+        <span class="listen-tag">Unit 9 · S9.2</span>
+        <span class="listen-title">Lisa &amp; Jeff — 咖啡廳扒竊事件</span>
+        <span class="listen-sub">Crime / Theft</span>
+      </div>
+      <div class="listen-body">
+        <div class="listen-context">
+          情境：Lisa 在咖啡廳坐著，一對年輕情侶靠近拍照，趁機把她的皮包（含信用卡、手機）偷走。Lisa 去銀行取消信用卡。
+        </div>
+        <div class="listen-qa">
+          <div class="qa-row"><span class="qa-q">Q</span><span>Where was Lisa when it happened?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>She was sitting in a café.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>How did the thieves distract her?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>They looked like tourists and asked her to take a picture of them.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>What did Lisa do after she realized her purse was gone?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>She checked her seat and table, then called the bank to cancel her credit card.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>The man in the jewelry store was posing as…</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>A fake banker / someone from a financial company.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation 2 Dan & Ingrid -->
+    <div class="listen-card">
+      <div class="listen-header">
+        <span class="listen-tag">Conversation 2</span>
+        <span class="listen-title">Dan &amp; Ingrid — 珠寶店詐騙</span>
+        <span class="listen-sub">Scam</span>
+      </div>
+      <div class="listen-body">
+        <div class="listen-context">
+          情境：Ingrid 幾年前在珠寶店工作時，一個陌生男子帶著項鍊說「這條可能值 $600」，Ingrid 被轉移注意力，後來發現男子的同夥其實是在用項鍊換取現金。騙局損失約 $600，Ingrid 後來辭職。
+        </div>
+        <div class="listen-qa">
+          <div class="qa-row"><span class="qa-q">Q</span><span>Where did the scam take place?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>In a jewelry store.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>How much money was involved?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>About $600.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>Why did Ingrid quit her job?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>Because the salary was only $600/month — not worth it after the incident.</span></div>
+          <div class="qa-row"><span class="qa-q">Q</span><span>What kind of scam technique was used?</span></div>
+          <div class="qa-row"><span class="qa-a">A</span><span>Distraction — one person draws attention while the other takes action.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════ PHRASES ════════════════ -->
+  <div class="section" id="sec-phrases">
+    <p class="sec-title">Phrases — 片語 / 慣用語</p>
+
+    <!-- Scam synonyms -->
+    <div class="topic-group">
+      <div class="topic-title">詐騙同義詞 <span class="topic-tag">Scam Synonyms</span></div>
+      <div class="table-wrap">
+        <ul class="phrase-list">
+          <li class="phrase-item"><span class="phrase-en">act as if you're someone else</span><span class="phrase-zh">假裝成別人</span></li>
+          <li class="phrase-item"><span class="phrase-en">trick someone</span><span class="phrase-zh">欺騙某人</span></li>
+          <li class="phrase-item"><span class="phrase-en">cause sb to not notice sth</span><span class="phrase-zh">使某人分心</span></li>
+          <li class="phrase-item"><span class="phrase-en">take sth quickly</span><span class="phrase-zh">快速拿走</span></li>
+          <li class="phrase-item"><span class="phrase-en">believe a trick</span><span class="phrase-zh">上當受騙</span></li>
+          <li class="phrase-item"><span class="phrase-en">exchange one thing for another</span><span class="phrase-zh">以物換物（詐騙手法）</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Agreeing on priorities -->
+    <div class="topic-group">
+      <div class="topic-title">表達優先順序 <span class="topic-tag">Agreeing on Priorities</span></div>
+      <div class="table-wrap">
+        <ul class="phrase-list">
+          <li class="phrase-item"><span class="phrase-en">It depends on (what / when)…</span><span class="phrase-zh">視情況而定</span></li>
+          <li class="phrase-item"><span class="phrase-en">It's important to…, isn't it?</span><span class="phrase-zh">…很重要，對吧？</span></li>
+          <li class="phrase-item"><span class="phrase-en">It's (not) a top priority to be able to…</span><span class="phrase-zh">…是（不是）最優先的</span></li>
+          <li class="phrase-item"><span class="phrase-en">I'd say that … is essential / vital / crucial</span><span class="phrase-zh">我認為…是必要的</span></li>
+          <li class="phrase-item"><span class="phrase-en">I can't see the point of (taking / choosing)…</span><span class="phrase-zh">我不覺得…有必要</span></li>
+          <li class="phrase-item"><span class="phrase-en">What would we do with a …?</span><span class="phrase-zh">我們要那個…幹什麼？</span></li>
+          <li class="phrase-item"><span class="phrase-en">… to keep you (warm / dry / alive)</span><span class="phrase-zh">…讓你保持（溫暖/乾燥/存活）</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Preparing the listener -->
+    <div class="topic-group">
+      <div class="topic-title">對話開場語 <span class="topic-tag">Conversation Starters</span></div>
+      <div class="table-wrap">
+        <ul class="phrase-list">
+          <li class="phrase-item"><span class="phrase-en">There's something I've been meaning to talk to you about.</span><span class="phrase-zh">我有件事一直想跟你說。</span></li>
+          <li class="phrase-item"><span class="phrase-en">I hope you don't take this the wrong way, but…</span><span class="phrase-zh">我希望你不要誤會，但…</span></li>
+          <li class="phrase-item"><span class="phrase-en">It's just that…</span><span class="phrase-zh">只是因為…</span></li>
+          <li class="phrase-item"><span class="phrase-en">I don't want you to get the wrong idea, but…</span><span class="phrase-zh">我不想讓你誤解，但…</span></li>
+          <li class="phrase-item"><span class="phrase-en">Do you know what I mean?</span><span class="phrase-zh">你知道我的意思嗎？</span></li>
+          <li class="phrase-item"><span class="phrase-en">Do you see where I'm coming from?</span><span class="phrase-zh">你明白我的立場嗎？</span></li>
+          <li class="phrase-item"><span class="phrase-en">How does that sound?</span><span class="phrase-zh">你覺得這樣怎麼樣？</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Express estimates -->
+    <div class="topic-group">
+      <div class="topic-title">表達估計 <span class="topic-tag">Express Estimates</span></div>
+      <div class="table-wrap">
+        <ul class="phrase-list">
+          <li class="phrase-item"><span class="phrase-en">roughly / approximately</span><span class="phrase-zh">大約</span></li>
+          <li class="phrase-item"><span class="phrase-en">about / around</span><span class="phrase-zh">大約（口語）</span></li>
+          <li class="phrase-item"><span class="phrase-en">just under / just over</span><span class="phrase-zh">略少於 / 略多於</span></li>
+          <li class="phrase-item"><span class="phrase-en">in the region of</span><span class="phrase-zh">大約在…範圍內</span></li>
+          <li class="phrase-item"><span class="phrase-en">upwards of</span><span class="phrase-zh">超過、在…以上</span></li>
+          <li class="phrase-item"><span class="phrase-en">You're kidding! / No way!</span><span class="phrase-zh">你在開玩笑吧！不可能！</span></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  // Tab switching
+  function setTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById('sec-' + name).classList.add('active');
+    document.getElementById('search-input').value = '';
+    clearSearch();
+  }
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    if (!q) { clearSearch(); return; }
+    // search table rows
+    document.querySelectorAll('.data-table tbody tr, .phrase-item, .qa-row').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.classList.toggle('hidden-row', !text.includes(q));
+    });
+    // hide topic groups with no visible rows
+    document.querySelectorAll('.topic-group').forEach(group => {
+      const visible = group.querySelectorAll('tr:not(.hidden-row):not(:first-child), .phrase-item:not(.hidden-row)');
+      group.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // hide listen cards
+    document.querySelectorAll('.listen-card').forEach(card => {
+      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  function clearSearch() {
+    document.querySelectorAll('.hidden-row').forEach(r => r.classList.remove('hidden-row'));
+    document.querySelectorAll('.topic-group').forEach(g => g.style.display = '');
+    document.querySelectorAll('.listen-card').forEach(c => c.style.display = '');
+  }
+</script>
+</body>
+</html>

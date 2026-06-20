@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英文聽力劇情整理</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background: #fff; color: #111; font-size: 15px; line-height: 1.75; }
+
+    /* ── Header ── */
+    header { border-bottom: 1px solid #e5e7eb; padding: 0 40px; }
+    .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 12px; height: 60px; }
+    .logo { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500; color: #1e3a5f; }
+    .logo span { font-weight: 300; }
+    .back-link { margin-left: auto; font-size: 13px; color: #6b7280; text-decoration: none; border: 1px solid #e5e7eb; border-radius: 8px; padding: 5px 12px; transition: all .15s; }
+    .back-link:hover { color: #1e3a5f; border-color: #1e3a5f; }
+
+    /* ── Sticky Unit Nav ── */
+    nav { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid #e5e7eb; padding: 0 40px; overflow-x: auto; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; white-space: nowrap; }
+    .nav-btn { padding: 13px 16px; font-size: 13px; font-family: inherit; font-weight: 500; color: #6b7280; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; }
+    .nav-btn:hover { color: #1e3a5f; }
+    .nav-btn.active { color: #1e3a5f; border-bottom-color: #1e3a5f; }
+
+    /* ── Main ── */
+    main { max-width: 900px; margin: 0 auto; padding: 48px 40px 100px; }
+
+    /* Section */
+    .unit-section { display: none; }
+    .unit-section.active { display: flex; flex-direction: column; gap: 48px; }
+
+    /* ── Story Card ── */
+    .story-card { border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+
+    /* Card header */
+    .card-head { background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 18px 24px; display: flex; align-items: flex-start; gap: 14px; }
+    .rec-tag { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; background: #1e3a5f; color: #fff; border-radius: 6px; padding: 4px 10px; white-space: nowrap; margin-top: 2px; }
+    .card-title { font-size: 17px; font-weight: 600; color: #111; }
+    .card-sub { font-size: 13px; color: #6b7280; margin-top: 3px; }
+
+    /* Card body */
+    .card-body { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Who & Where row */
+    .meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .meta-box { background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 10px; padding: 14px 16px; }
+    .meta-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: #9ca3af; margin-bottom: 6px; }
+    .meta-val { font-size: 14px; color: #374151; }
+
+    /* Plot */
+    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: #9ca3af; margin-bottom: 10px; }
+
+    .plot-steps { display: flex; flex-direction: column; gap: 0; }
+    .plot-step { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; align-items: flex-start; }
+    .plot-step:last-child { border-bottom: none; }
+    .step-num { width: 24px; height: 24px; border-radius: 50%; background: #eef3f9; color: #1e3a5f; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-text { font-size: 14px; color: #374151; flex: 1; }
+    .step-text strong { color: #111; }
+
+    /* Highlight panel */
+    .hl-panel { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 18px; }
+    .hl-panel.blue { background: #eef3f9; border-color: #bfdbfe; }
+    .hl-panel.red { background: #fef2f2; border-color: #fecaca; }
+    .hl-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #92400e; margin-bottom: 10px; }
+    .hl-panel.blue .hl-title { color: #1e3a5f; }
+    .hl-panel.red .hl-title { color: #991b1b; }
+    .hl-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .hl-list li { font-size: 14px; color: #374151; display: flex; gap: 8px; }
+    .hl-list li::before { content: '▸'; color: #d97706; flex-shrink: 0; }
+    .hl-panel.blue .hl-list li::before { color: #1e3a5f; }
+    .hl-panel.red .hl-list li::before { color: #dc2626; }
+
+    /* Dialogue snippet */
+    .dialogue { background: #f9fafb; border-radius: 10px; padding: 16px 18px; }
+    .dl-row { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
+    .dl-row:last-child { border-bottom: none; }
+    .dl-who { font-family: 'DM Mono', monospace; font-weight: 600; color: #1e3a5f; font-size: 12px; padding-top: 1px; }
+    .dl-line { color: #374151; }
+    .dl-line em { color: #6b7280; font-style: normal; }
+
+    /* MC Questions */
+    .mc-list { display: flex; flex-direction: column; gap: 16px; }
+    .mc-item { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+    .mc-q { padding: 12px 16px; font-size: 14px; font-weight: 500; color: #111; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+    .mc-q span { font-family: 'DM Mono', monospace; font-size: 12px; color: #6b7280; margin-right: 8px; }
+    .mc-options { padding: 10px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
+    .mc-opt { font-size: 13px; color: #374151; display: flex; gap: 8px; padding: 5px 10px; border-radius: 6px; }
+    .mc-opt.correct { background: #f0fdf4; color: #166534; font-weight: 500; }
+    .mc-opt.correct::before { content: '✓'; }
+    .mc-opt:not(.correct)::before { content: '○'; color: #d1d5db; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <span class="logo">iji<span>Words</span></span>
+    <span style="color:#d1d5db;font-size:14px">／ 英文期末聽力劇情整理</span>
+    <a href="期末整理.html" class="back-link">← 返回總整理</a>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="setUnit('u8')">Unit 8 · 金錢借貸 ／ 美國文化</button>
+    <button class="nav-btn" onclick="setUnit('u9')">Unit 9 · 詐騙 ／ 犯罪</button>
+    <button class="nav-btn" onclick="setUnit('u10')">Unit 10 · 電影 ／ 行為</button>
+    <button class="nav-btn" onclick="setUnit('reading')">閱讀文章</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     UNIT 8
+══════════════════════════════════════════ -->
+<div class="unit-section active" id="u8">
+
+  <!-- S8.5 Jim & Liz -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">S 8.5</span>
+      <div>
+        <div class="card-title">Jim &amp; Liz — 借錢還錢</div>
+        <div class="card-sub">話題：金錢借貸、表達不滿、提出解決方案</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">人物</div><div class="meta-val">J = Jim（借錢的人）<br>L = Liz（借出錢的人）</div></div>
+        <div class="meta-box"><div class="meta-label">場景</div><div class="meta-val">喝咖啡時，Liz 主動找 Jim 談</div></div>
+        <div class="meta-box"><div class="meta-label">借款金額</div><div class="meta-val">最近一次 $10（上週）<br>累計不止這一次</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">完整劇情（照順序）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">1</div><div class="step-text">Liz 端咖啡給 Jim，說她一直想找他談件事。</div></div>
+          <div class="plot-step"><div class="step-num">2</div><div class="step-text">Liz 提到：「你上週向我借了 $10 對吧？」Jim 承認，但說身上現在沒帶錢。</div></div>
+          <div class="plot-step"><div class="step-num">3</div><div class="step-text">Liz 說：這不是第一次了。她借過 Jim 很多次小額的錢，但每次都沒還回來，<strong>加起來其實不少</strong>。</div></div>
+          <div class="plot-step"><div class="step-num">4</div><div class="step-text">Jim 道歉，說自己 terrible with money（對金錢管理很差）、常常忘記。他請求等一週，等到薪水發下來再還。</div></div>
+          <div class="plot-step"><div class="step-num">5</div><div class="step-text">Liz 說：Jim 之前也答應過還，但都沒有兌現。這讓她在他身邊感到 awkward（不自在）。</div></div>
+          <div class="plot-step"><div class="step-num">6</div><div class="step-text"><strong>Liz 提出解決方案</strong>：先算清楚總共欠了多少，然後每週還一點點，還多少都可以，只要固定還就好。</div></div>
+          <div class="plot-step"><div class="step-num">7</div><div class="step-text">Jim 說：That sounds reasonable.（聽起來合理）並同意這個方法。</div></div>
+        </div>
+      </div>
+
+      <div class="hl-panel">
+        <div class="hl-title">⚠ 常考細節（容易出選擇題）</div>
+        <ul class="hl-list">
+          <li>是 <strong>Jim 欠 Liz 錢</strong>，不是反過來（容易弄反）</li>
+          <li>Jim 沒帶錢不是故意的，而是身上剛好沒有</li>
+          <li>Liz <strong>沒有生氣罵人</strong>，而是冷靜說明感受（awkward/funny feeling）</li>
+          <li>Jim 說「等一週付款」，但 Liz 說他<strong>之前也這樣說過但沒做到</strong></li>
+          <li>最終解決方案是：<strong>每週固定還一小部分</strong>，不規定固定金額</li>
+          <li>Jim 的態度：guilty（愧疚）、agrees to the plan（同意計畫）</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">關鍵對話片段</div>
+        <div class="dialogue">
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">There's something I've been meaning to talk to you about.</div></div>
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">This isn't the first time I've lent you money... it kind of adds up really quickly.</div></div>
+          <div class="dl-row"><div class="dl-who">J</div><div class="dl-line">I promise I'll give it back, but could you wait a week? Until I get paid?</div></div>
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">You've said that once before… it never happened. It makes things slightly awkward.</div></div>
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">I'd feel better if we could work out how much is owed, and then you could pay me back a little each week.</div></div>
+          <div class="dl-row"><div class="dl-who">J</div><div class="dl-line">Yeah, yeah. That sounds reasonable.</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>Who owes money to whom?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Liz owes Jim $10</div>
+              <div class="mc-opt correct">b) Jim owes Liz $10</div>
+              <div class="mc-opt">c) They both owe each other</div>
+              <div class="mc-opt">d) Neither of them owes money</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>Why does Liz feel uncomfortable?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Jim was rude to her</div>
+              <div class="mc-opt correct">b) Jim borrowed money multiple times and never paid it back</div>
+              <div class="mc-opt">c) She doesn't have enough money herself</div>
+              <div class="mc-opt">d) Jim told other people about the loan</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q3</span>What solution does Liz suggest?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Jim should pay everything back immediately</div>
+              <div class="mc-opt">b) Jim should forget about the debt</div>
+              <div class="mc-opt correct">c) Jim should pay back a little each week</div>
+              <div class="mc-opt">d) Liz will stop lending Jim money</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S8.8 American customs -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">S 8.8</span>
+      <div>
+        <div class="card-title">美國社交文化 — Names &amp; Greetings</div>
+        <div class="card-sub">話題：姓名稱謂、打招呼方式、肢體語言、守時</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">形式</div><div class="meta-val">說明性對話 / 短文介紹</div></div>
+        <div class="meta-box"><div class="meta-label">主題</div><div class="meta-val">赴美旅遊或商務必知文化禮儀</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">重點內容（逐項）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">①</div><div class="step-text"><strong>姓名稱謂：</strong>初次見面（尤其商務場合）用 <strong>Mr./Ms. + 姓</strong>（last name）是有禮貌的做法。</div></div>
+          <div class="plot-step"><div class="step-num">②</div><div class="step-text"><strong>但是！</strong>大多數美國人很快就會改用 first name（名字）。他們喜歡 <strong>first-name basis</strong>（直呼其名）的關係。</div></div>
+          <div class="plot-step"><div class="step-num">③</div><div class="step-text"><strong>握手：</strong>初次見面最常見的問候方式是<strong>握手（shake hands）</strong>，在商業場合尤其普遍。</div></div>
+          <div class="plot-step"><div class="step-num">④</div><div class="step-text"><strong>擁抱：</strong>陌生人或初識者之間通常<strong>不擁抱</strong>，但熟識的朋友或家人之間擁抱很正常。如果對方擁抱你，不要驚訝。</div></div>
+          <div class="plot-step"><div class="step-num">⑤</div><div class="step-text"><strong>守時：</strong>在美國，遲到（being late）被視為不禮貌，尤其是商業場合。要準時。</div></div>
+          <div class="plot-step"><div class="step-num">⑥</div><div class="step-text"><strong>肢體語言：</strong>手勢在各文化意思不同。例如「OK」手勢在某些國家是侮辱性的，不能亂用。</div></div>
+        </div>
+      </div>
+
+      <div class="hl-panel blue">
+        <div class="hl-title">常考重點</div>
+        <ul class="hl-list">
+          <li>美國人一開始用 title + last name，但<strong>很快換成 first name</strong></li>
+          <li>握手是商務初次見面最標準的動作</li>
+          <li>擁抱用於熟識者，陌生人間不建議</li>
+          <li>遲到在美國商務文化中是<strong>失禮的行為</strong></li>
+          <li>手勢（body language）在不同文化有<strong>完全不同的意義</strong></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>When you first meet someone in the US for business, what is the correct way to address them?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Use their first name immediately</div>
+              <div class="mc-opt correct">b) Use Mr./Ms. + last name</div>
+              <div class="mc-opt">c) Use their nickname</div>
+              <div class="mc-opt">d) Don't use their name at all</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>According to the recording, which statement about Americans is TRUE?</div>
+            <div class="mc-options">
+              <div class="mc-opt correct">a) Most Americans prefer to be on a first-name basis</div>
+              <div class="mc-opt">b) Americans never shake hands</div>
+              <div class="mc-opt">c) Being a little late is acceptable in business</div>
+              <div class="mc-opt">d) Hugging strangers is common in America</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /u8 -->
+
+<!-- ══════════════════════════════════════════
+     UNIT 9
+══════════════════════════════════════════ -->
+<div class="unit-section" id="u9">
+
+  <!-- S9.2 Lise & Jeff -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">S 9.2 · Conversation 1</span>
+      <div>
+        <div class="card-title">Lise &amp; Jeff — 咖啡廳扒竊事件</div>
+        <div class="card-sub">話題：偷竊、分心手法、後續處理</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">人物</div><div class="meta-val">L = Lise（受害者）<br>J = Jeff（朋友，聆聽者）</div></div>
+        <div class="meta-box"><div class="meta-label">場景</div><div class="meta-val">事發地：咖啡廳<br>對話：事後與Jeff分享</div></div>
+        <div class="meta-box"><div class="meta-label">失竊物品</div><div class="meta-val">錢包、手機、信用卡、鑰匙、所有東西</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">完整劇情（照順序）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">1</div><div class="step-text">Lise 一個人坐在咖啡廳，把包包放在椅子旁邊。</div></div>
+          <div class="plot-step"><div class="step-num">2</div><div class="step-text">一對<strong>年輕情侶</strong>走進來，看起來<strong>像觀光客（looked like tourists）</strong>。</div></div>
+          <div class="plot-step"><div class="step-num">3</div><div class="step-text">那對情侶<strong>請 Lise 幫他們拍照</strong>（asked her to take their picture）。Lise 好心答應了。</div></div>
+          <div class="plot-step"><div class="step-num">4</div><div class="step-text">拍完照後，那對情侶道謝後離開。</div></div>
+          <div class="plot-step"><div class="step-num">5</div><div class="step-text">Lise 往椅子旁一看：<strong>包包不見了！</strong>裡面有手機、錢包、信用卡、鑰匙，什麼都沒了。</div></div>
+          <div class="plot-step"><div class="step-num">6</div><div class="step-text">鄰桌有一位男士看到 Lise 很慌亂，主動上前說明該怎麼辦。</div></div>
+          <div class="plot-step"><div class="step-num">7</div><div class="step-text">那位男士說他在銀行工作，給了 Lise 電話號碼，<strong>並讓 Lise 用他的手機打電話給銀行</strong>取消信用卡。</div></div>
+        </div>
+      </div>
+
+      <div class="hl-panel">
+        <div class="hl-title">⚠ 常考細節</div>
+        <ul class="hl-list">
+          <li><strong>手法：分散注意力（distraction）</strong>——假裝觀光客拍照，趁機行竊</li>
+          <li>情侶是<strong>兩個人合作</strong>的扒竊（一個拍照，一個偷包）</li>
+          <li>失竊地點：<strong>咖啡廳（café）</strong></li>
+          <li>鄰桌男士<strong>讓她用他的手機</strong>打電話——這個細節常出題</li>
+          <li>Lise 的第一個行動：<strong>打電話給銀行取消信用卡</strong></li>
+          <li>情侶看起來像觀光客 → 這是讓 Lise 降低警戒的原因</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">關鍵對話片段</div>
+        <div class="dialogue">
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">I was sitting in a café, and this young couple — they <strong>looked like tourists</strong> — asked me to take a picture of them.</div></div>
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">And I took their picture, and they thanked me and left, and then I looked at my seat and realized <strong>my purse was gone</strong> — with my cell, wallet, credit card, keys, everything.</div></div>
+          <div class="dl-row"><div class="dl-who">J</div><div class="dl-line">No! What did you do?</div></div>
+          <div class="dl-row"><div class="dl-who">L</div><div class="dl-line">There was a guy at the next table… he let me use his phone to <strong>call the bank and cancel my credit card</strong>.</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>How did the thieves distract Lise?</div>
+            <div class="mc-options">
+              <div class="mc-opt correct">a) They asked her to take a photo of them</div>
+              <div class="mc-opt">b) They spilled coffee on her</div>
+              <div class="mc-opt">c) They asked her for directions</div>
+              <div class="mc-opt">d) They started an argument nearby</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>What was NOT stolen from Lise's bag?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Her credit card</div>
+              <div class="mc-opt">b) Her cell phone</div>
+              <div class="mc-opt">c) Her keys</div>
+              <div class="mc-opt correct">d) Her passport <em style="font-style:italic;color:#9ca3af">(not mentioned)</em></div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q3</span>What did the man at the next table do to help?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) He chased the thieves</div>
+              <div class="mc-opt">b) He called the police</div>
+              <div class="mc-opt correct">c) He let Lise use his phone to call the bank</div>
+              <div class="mc-opt">d) He paid for her coffee</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Conversation 2: Dan & Ingrid -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">Conversation 2</span>
+      <div>
+        <div class="card-title">Dan &amp; Ingrid — 珠寶店假警察詐騙</div>
+        <div class="card-sub">話題：詐騙手法、假冒身分、職場損失</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">人物</div><div class="meta-val">D = Dan（受害者，前員工）<br>I = Ingrid（朋友）</div></div>
+        <div class="meta-box"><div class="meta-label">事發地點</div><div class="meta-val">珠寶店（jewelry store）<br>幾年前 Dan 在那裡工作</div></div>
+        <div class="meta-box"><div class="meta-label">損失</div><div class="meta-val">項鍊一條，價值約 $600<br>最後從 Dan 薪水扣</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">完整劇情（照順序）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">1</div><div class="step-text">Dan 幾年前在珠寶店工作。</div></div>
+          <div class="plot-step"><div class="step-num">2</div><div class="step-text">一名<strong>年輕、好看、穿著體面的女性</strong>進店來看項鍊，準備要付款買一條高價項鍊。</div></div>
+          <div class="plot-step"><div class="step-num">3</div><div class="step-text">這時，一名男子走進店，<strong>亮出警察證（flashed his police I.D.）</strong>，聲稱他正在逮捕那名女子，說她是罪犯。</div></div>
+          <div class="plot-step"><div class="step-num">4</div><div class="step-text">男子說需要把項鍊<strong>當作證物（as evidence）</strong>帶走，並記錄了項鍊的細節，承諾當天結束前會把項鍊帶回來。</div></div>
+          <div class="plot-step"><div class="step-num">5</div><div class="step-text">Dan 完全沒有起疑心，讓他們離開了。</div></div>
+          <div class="plot-step"><div class="step-num">6</div><div class="step-text">到了快下班，兩個人都<strong>沒有回來</strong>。Dan 越來越擔心，但一直到關店才發現不對。</div></div>
+          <div class="plot-step"><div class="step-num">7</div><div class="step-text">Dan 打電話給警察局，但<strong>警方完全沒有這件事的記錄</strong>——那個「警察」是假的。</div></div>
+          <div class="plot-step"><div class="step-num">8</div><div class="step-text">項鍊價值 <strong>$600</strong>，Dan 的老闆要求他從薪水扣除。</div></div>
+          <div class="plot-step"><div class="step-num">9</div><div class="step-text">Dan 因此<strong>辭職（quit）</strong>了。（因為月薪才 $600，賠不起）</div></div>
+        </div>
+      </div>
+
+      <div class="hl-panel red">
+        <div class="hl-title">⚠ 絕對要記的細節</div>
+        <ul class="hl-list">
+          <li>詐騙手法：<strong>假警察 + 女性同謀</strong>（兩人合作）</li>
+          <li>「女性」是同謀，不是真正的嫌疑人</li>
+          <li>項鍊以「<strong>證物</strong>」名義帶走，不是直接搶</li>
+          <li>項鍊價值 <strong>$600</strong>（和 Dan 月薪一樣）</li>
+          <li>Dan 打電話給警察，警方<strong>完全不知道這件事</strong>（所以確認是假警察）</li>
+          <li>結果：<strong>老闆從薪水扣錢 → Dan 辭職</strong></li>
+          <li>Ingrid 說：You never told me about that. （之前 Dan 從來沒說過）</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">關鍵對話片段</div>
+        <div class="dialogue">
+          <div class="dl-row"><div class="dl-who">D</div><div class="dl-line">I was badly tricked a few years ago when I was working in a jewelry store.</div></div>
+          <div class="dl-row"><div class="dl-who">D</div><div class="dl-line">He flashed his police I.D. and said he was arresting her… He took the necklace as evidence and promised me he'd bring it back by the end of the day.</div></div>
+          <div class="dl-row"><div class="dl-who">D</div><div class="dl-line">I didn't suspect anything. Then he took the woman away.</div></div>
+          <div class="dl-row"><div class="dl-who">D</div><div class="dl-line">So then I phoned the police, and they had no idea what I was talking about.</div></div>
+          <div class="dl-row"><div class="dl-who">I</div><div class="dl-line">How much was the necklace worth?</div></div>
+          <div class="dl-row"><div class="dl-who">D</div><div class="dl-line">$600. And my boss took it out of my salary. That's why I quit.</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>Who was the man who entered the jewelry store?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) A real police officer</div>
+              <div class="mc-opt correct">b) A fake police officer who was part of the scam</div>
+              <div class="mc-opt">c) The store manager</div>
+              <div class="mc-opt">d) A customer</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>Why did Dan quit his job?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) He was fired for letting the necklace be taken</div>
+              <div class="mc-opt correct">b) His boss deducted $600 from his salary — the same as his monthly wage</div>
+              <div class="mc-opt">c) He was traumatized by the experience</div>
+              <div class="mc-opt">d) The police told him to leave</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q3</span>How did Dan confirm it was a scam?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) He saw the couple on the news</div>
+              <div class="mc-opt correct">b) He called the police and they had no record of the case</div>
+              <div class="mc-opt">c) The necklace was found elsewhere</div>
+              <div class="mc-opt">d) His boss told him</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /u9 -->
+
+<!-- ══════════════════════════════════════════
+     UNIT 10
+══════════════════════════════════════════ -->
+<div class="unit-section" id="u10">
+
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">Unit 10 · 電影討論</span>
+      <div>
+        <div class="card-title">電影紀錄片討論 — Popular Culture</div>
+        <div class="card-sub">話題：電影類型形容詞、Q&amp;A 關於電影與大眾文化</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">形式</div><div class="meta-val">Q&amp;A 討論 + 閱讀文章（Midnight in Paris）</div></div>
+        <div class="meta-box"><div class="meta-label">主題</div><div class="meta-val">Rock music 特性、演藝圈、電影評論</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">Rock Music 特色（Q&amp;A 重點）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">Q</div><div class="step-text">What is rock music characterized by?（Rock music 的特色是什麼？）</div></div>
+          <div class="plot-step"><div class="step-num">A</div><div class="step-text">Rock music is characterized by a strong bass line, driving rhythm, and percussion. The lyrics go beyond having music and film → beyond the beat → the musicians go beyond playing instruments.</div></div>
+          <div class="plot-step"><div class="step-num">Q</div><div class="step-text">What about the concert/live performance side?</div></div>
+          <div class="plot-step"><div class="step-num">A</div><div class="step-text">People at concerts often want to be entertained and will stand up and sing along. Audience participation is part of the experience.</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">演藝圈知識（Q&amp;A）</div>
+        <div class="plot-steps">
+          <div class="plot-step"><div class="step-num">Q</div><div class="step-text">A big star auditioning for a part — is this unusual?</div></div>
+          <div class="plot-step"><div class="step-num">A</div><div class="step-text">Actually for big stars, auditions rarely happen. The director chooses them from their portfolio / previous work. More often a director asks a specific actor to play the role.</div></div>
+          <div class="plot-step"><div class="step-num">Q</div><div class="step-text">What happens when a producer hires a big star?</div></div>
+          <div class="plot-step"><div class="step-num">A</div><div class="step-text">The star is given a script and they don't have to read to the director. They're often given a chance to produce a movie themselves (a package deal).</div></div>
+        </div>
+      </div>
+
+      <div class="hl-panel blue">
+        <div class="hl-title">Midnight in Paris — 電影介紹重點</div>
+        <ul class="hl-list">
+          <li>導演：<strong>Woody Allen</strong></li>
+          <li>主角：<strong>Gil</strong>（Owen Wilson 飾演），好萊塢編劇</li>
+          <li>場景：<strong>巴黎春天</strong>，Gil 與女友及女友家人度假</li>
+          <li>神奇劇情：每天午夜 12 點，Gil 搭上老舊 Peugeot，<strong>穿越回 1920 年代的巴黎</strong></li>
+          <li>1920 年代：Gil 遇見他崇拜的藝術英雄和文人（Picasso、Hemingway 等）</li>
+          <li>Gil 愛上 Adriana（Picasso 的情婦）</li>
+          <li>主題：懷舊（nostalgia）、現實 vs 過去的理想化</li>
+          <li>評語：<em>delightful, sparkling, engaging</em>（評論正面用詞）</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /u10 -->
+
+<!-- ══════════════════════════════════════════
+     READING
+══════════════════════════════════════════ -->
+<div class="unit-section" id="reading">
+
+  <!-- Change the Things You Can -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">閱讀 / 聽力文章</span>
+      <div>
+        <div class="card-title">Change the Things You Can</div>
+        <div class="card-sub">話題：面對不公平的正確態度、理性思考</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">文章形式</div><div class="meta-val">第一人稱建議文（作者親身經歷）</div></div>
+        <div class="meta-box"><div class="meta-label">核心訊息</div><div class="meta-val">遇到不公平 → 保持冷靜 → 理性行動</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">文章結構（三個重點）</div>
+        <div class="plot-steps">
+          <div class="plot-step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>保持正向態度（Positive Attitude）</strong><br>
+              遇到不公平時，不要整夜憤怒失眠。要保持正向態度——因為帶著憤怒很難改變任何事。用 <em>can-do attitude</em> 帶入正能量。
+            </div>
+          </div>
+          <div class="plot-step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>用理性而非情緒（Head, not Heart）</strong><br>
+              要讓「頭腦」主導，不能讓「情緒」主導。情緒化只會讓事情更糟。要冷靜（stay calm）。作者說自己就是靠這樣冷靜的方式，得到了一次晉升機會。
+            </div>
+          </div>
+          <div class="plot-step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>分辨「能改變」與「不能改變」的事</strong><br>
+              <u>不能改變的例子</u>：有人撞了作者的車然後跑走 → 只能接受，繼續往前（move on）。<br>
+              <u>能改變的例子</u>：看到有人欺負別人 → 可以出聲，清楚、冷靜、不帶情緒地說出來。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hl-panel">
+        <div class="hl-title">⚠ 常考細節</div>
+        <ul class="hl-list">
+          <li>文章中的「撞車」例子：作者<strong>無法做任何事</strong>，只好接受</li>
+          <li>作者親身例子：靠冷靜的態度，最後<strong>得到晉升（promotion）</strong></li>
+          <li>對他人施暴：建議<strong>清楚、堅定、不情緒化</strong>地說出來</li>
+          <li>關鍵連接詞（文法考點）：<strong>so that</strong>（目的）/ <strong>because</strong>（原因）/ <strong>so as to</strong>（目的）/ <strong>in order to</strong>（目的）</li>
+          <li>結論：用正確態度，可以<strong>對情況和他人產生正面影響</strong></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>According to the article, what should you do FIRST when treated unfairly?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) Tell everyone about it immediately</div>
+              <div class="mc-opt correct">b) Develop a positive, can-do attitude</div>
+              <div class="mc-opt">c) Contact a lawyer</div>
+              <div class="mc-opt">d) Do nothing and wait</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>Why did the author eventually get a promotion?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) By getting angry and demanding it</div>
+              <div class="mc-opt">b) By asking friends for help</div>
+              <div class="mc-opt correct">c) By staying calm and fighting rationally for justice</div>
+              <div class="mc-opt">d) By accepting the unfair treatment</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q3</span>The car accident example in the article illustrates:</div>
+            <div class="mc-options">
+              <div class="mc-opt correct">a) A situation you cannot change — so you must accept and move on</div>
+              <div class="mc-opt">b) A situation where you should call the police</div>
+              <div class="mc-opt">c) A situation that can be improved with a positive attitude</div>
+              <div class="mc-opt">d) A situation where legal action is recommended</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CCTV / Memory reliability -->
+  <div class="story-card">
+    <div class="card-head">
+      <span class="rec-tag">閱讀文章</span>
+      <div>
+        <div class="card-title">CCTV &amp; Memory — 記憶與監視器的可信度</div>
+        <div class="card-sub">話題：目擊者記憶的不可靠性、CCTV 的影響</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="meta-row">
+        <div class="meta-box"><div class="meta-label">背景事件</div><div class="meta-val">2005 年倫敦恐怖攻擊<br>（雙層巴士爆炸）</div></div>
+        <div class="meta-box"><div class="meta-label">研究資料</div><div class="meta-val">美國研究（1997年）<br>90%案例中記憶被媒體影響</div></div>
+      </div>
+
+      <div>
+        <div class="section-label">文章重點（逐段）</div>
+        <div class="plot-steps">
+          <div class="plot-step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>引題：2005 倫敦爆炸</strong><br>
+              大多數人以為自己記得看過那輛紅色雙層巴士被炸毀的<strong>影片</strong>，但實際上那個角度的影片<strong>從未公開播出</strong>。人們「記得」的其實是報紙上的<strong>照片</strong>，但大腦把它轉化成「影片的記憶」。
+            </div>
+          </div>
+          <div class="plot-step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>記憶的不可靠性</strong><br>
+              媒體報導、他人陳述、照片都能<strong>改變我們的記憶</strong>。我們以為自己記得，但記憶其實是被「填充」進去的。
+            </div>
+          </div>
+          <div class="plot-step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>美國研究數據</strong><br>
+              在 90% 的案例中，目擊者的記憶已經被媒體報導<strong>所改變</strong>。在 40% 的案例中，<strong>無法辨認任何人</strong>。在 20% 的案例中，<strong>錯誤地指認了無辜者</strong>（identified the wrong person）。
+            </div>
+          </div>
+          <div class="plot-step">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <strong>CCTV 的正面效果</strong><br>
+              雖然記憶不可靠，但城市中大量增加的 CCTV 攝影機確實<strong>減少了深夜犯罪</strong>的案例數量。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hl-panel red">
+        <div class="hl-title">⚠ 常考數字與細節</div>
+        <ul class="hl-list">
+          <li><strong>90%</strong>：目擊者記憶被媒體影響的案例比例</li>
+          <li><strong>40%</strong>：完全無法辨識嫌疑人的案例</li>
+          <li><strong>20%</strong>：錯誤指認（指認錯人）的案例</li>
+          <li>2005 倫敦爆炸：人們「記得看過影片」但<strong>那個影片從未公播</strong></li>
+          <li>CCTV 的作用：<strong>減少深夜犯罪</strong>（late-night crime in town centers）</li>
+          <li>記憶會被：媒體 / 照片 / 他人說法所<strong>改變和污染</strong></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="section-label">模擬選擇題</div>
+        <div class="mc-list">
+          <div class="mc-item">
+            <div class="mc-q"><span>Q1</span>Why do many people think they saw a video of the 2005 London bus explosion?</div>
+            <div class="mc-options">
+              <div class="mc-opt correct">a) Because they saw photographs, but their brain converted them into a memory of a video</div>
+              <div class="mc-opt">b) Because the video was played on TV many times</div>
+              <div class="mc-opt">c) Because they were near the scene</div>
+              <div class="mc-opt">d) Because they read about it in books</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q2</span>According to the American study, in what percentage of cases was the wrong person identified?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) 40%</div>
+              <div class="mc-opt">b) 90%</div>
+              <div class="mc-opt correct">c) 20%</div>
+              <div class="mc-opt">d) 10%</div>
+            </div>
+          </div>
+          <div class="mc-item">
+            <div class="mc-q"><span>Q3</span>What POSITIVE effect have CCTV cameras had?</div>
+            <div class="mc-options">
+              <div class="mc-opt">a) They make people's memories more accurate</div>
+              <div class="mc-opt correct">b) They have reduced late-night crime in town centers</div>
+              <div class="mc-opt">c) They help people recognize criminals on the street</div>
+              <div class="mc-opt">d) They have replaced eyewitness testimony in court</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /reading -->
+
+</main>
+
+<script>
+  function setUnit(id) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.unit-section').forEach(s => s.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0 });
+  }
+</script>
+</body>
+</html>
