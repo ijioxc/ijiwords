@@ -3,656 +3,214 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ijiWords — 英文單字整理</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <title>ijiWords</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
-            mono: ['DM Mono', 'monospace'],
-          },
-          colors: {
-            navy: { DEFAULT: '#1e3a5f', light: '#2a4f7c', faint: '#eef3f9' },
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
-    .badge { font-family: 'DM Mono', monospace; }
-    /* star rating */
-    .star-btn { cursor: pointer; transition: color 0.15s; }
-    /* fade-in row */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      background: #fff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .row-enter { animation: fadeInUp 0.2s ease both; }
-    /* scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f9fafb; }
-    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-    /* tab active */
-    .tab-active { border-color: #1e3a5f !important; color: #1e3a5f !important; font-weight: 600; }
-    /* sortable header */
-    th[data-sort] { cursor: pointer; user-select: none; }
-    th[data-sort]:hover { color: #1e3a5f; }
-    .sort-icon { display: inline-block; width: 14px; text-align: center; opacity: 0.35; font-size: 10px; }
-    th[data-sort].sorted .sort-icon { opacity: 1; }
-    /* empty state */
-    #empty-state { display: none; }
+
+    header {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 48px;
+    }
+    .header-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center;
+      height: 64px; gap: 10px;
+    }
+    .logo { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: #1e3a5f; }
+    .logo span { font-weight: 300; }
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 64px 48px 80px;
+    }
+
+    .hero {
+      margin-bottom: 56px;
+    }
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: 36px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* Cards grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: #1e3a5f;
+      box-shadow: 0 4px 24px rgba(30,58,95,.08);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .card-icon.blue  { background: #eef3f9; }
+    .card-icon.amber { background: #fffbeb; }
+    .card-icon.green { background: #f0fdf4; }
+
+    .card-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-chips {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 20px;
+    }
+    .chip {
+      font-size: 12px;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .card-arrow {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #1e3a5f;
+      font-weight: 500;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    footer {
+      border-top: 1px solid #f3f4f6;
+      padding: 20px 48px;
+      text-align: center;
+      font-size: 12px;
+      color: #d1d5db;
+      font-family: 'DM Mono', monospace;
+    }
   </style>
 </head>
-<body class="bg-white text-gray-900 min-h-screen">
+<body>
 
-  <!-- ── Header ── -->
-  <header class="border-b border-gray-200 sticky top-0 bg-white/95 backdrop-blur-sm z-30">
-    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
-      <div class="flex items-center gap-2 mr-auto">
-        <span class="font-mono text-navy font-semibold text-xl tracking-tight">iji<span class="font-light">Words</span></span>
-        <span class="text-gray-300 text-sm">／</span>
-        <span class="text-gray-500 text-sm">英文單字整理</span>
-      </div>
-      <!-- Search -->
-      <div class="relative hidden sm:block">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input id="search-input" type="text" placeholder="搜尋單字、意思…"
-          class="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg w-56 focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-      </div>
-      <!-- Export / Import -->
-      <button onclick="exportJSON()" title="匯出 JSON"
-        class="text-sm text-gray-500 hover:text-navy border border-gray-200 hover:border-navy rounded-lg px-3 py-2 transition flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        匯出
-      </button>
-      <label title="匯入 JSON"
-        class="text-sm text-gray-500 hover:text-navy border border-gray-200 hover:border-navy rounded-lg px-3 py-2 transition flex items-center gap-1.5 cursor-pointer">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
-        匯入
-        <input id="import-input" type="file" accept=".json" class="hidden" onchange="importJSON(event)" />
-      </label>
-    </div>
-  </header>
+<header>
+  <div class="header-inner">
+    <span class="logo">iji<span>Words</span></span>
+  </div>
+</header>
 
-  <main class="max-w-5xl mx-auto px-6 py-10 space-y-10">
-
-    <!-- ── Add Form ── -->
-    <section>
-      <h2 class="text-xs font-mono font-medium text-gray-400 uppercase tracking-widest mb-5">新增單字</h2>
-      <div class="border border-gray-200 rounded-2xl p-8 space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-
-          <!-- Word -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide">單字 <span class="text-red-400">*</span></label>
-            <input id="f-word" type="text" placeholder="e.g. ambiguous"
-              class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-          </div>
-
-          <!-- Part of Speech -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide">詞性 <span class="text-red-400">*</span></label>
-            <select id="f-pos"
-              class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition bg-white">
-              <option value="">選擇詞性</option>
-              <option value="n.">n. 名詞</option>
-              <option value="v.">v. 動詞</option>
-              <option value="adj.">adj. 形容詞</option>
-              <option value="adv.">adv. 副詞</option>
-              <option value="prep.">prep. 介系詞</option>
-              <option value="conj.">conj. 連接詞</option>
-              <option value="phr.">phr. 片語</option>
-              <option value="idiom">idiom 慣用語</option>
-            </select>
-          </div>
-
-          <!-- Category -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide">分類</label>
-            <div class="flex gap-2">
-              <select id="f-cat-select"
-                class="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition bg-white">
-                <option value="">選擇分類</option>
-                <option value="日常">日常</option>
-                <option value="商業">商業</option>
-                <option value="科技">科技</option>
-                <option value="學術">學術</option>
-                <option value="旅遊">旅遊</option>
-                <option value="醫療">醫療</option>
-                <option value="自訂">自訂…</option>
-              </select>
-              <input id="f-cat-custom" type="text" placeholder="自訂"
-                class="hidden w-28 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-            </div>
-          </div>
-
-          <!-- Chinese Meaning -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide">中文意思 <span class="text-red-400">*</span></label>
-            <input id="f-meaning" type="text" placeholder="e.g. 模稜兩可的"
-              class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-          </div>
-
-          <!-- Example Sentence -->
-          <div class="space-y-1.5 sm:col-span-2">
-            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wide">例句 <span class="text-gray-300">(選填)</span></label>
-            <input id="f-example" type="text" placeholder="e.g. The instructions were ambiguous and confusing."
-              class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-          </div>
-
-        </div>
-
-        <!-- Difficulty Stars + Submit -->
-        <div class="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-gray-100">
-          <div class="flex items-center gap-3">
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">難度</span>
-            <div id="star-input" class="flex gap-1" aria-label="選擇難度 1–5 顆星">
-              <span class="star-btn text-2xl text-gray-300" data-v="1">★</span>
-              <span class="star-btn text-2xl text-gray-300" data-v="2">★</span>
-              <span class="star-btn text-2xl text-gray-300" data-v="3">★</span>
-              <span class="star-btn text-2xl text-gray-300" data-v="4">★</span>
-              <span class="star-btn text-2xl text-gray-300" data-v="5">★</span>
-            </div>
-            <span id="star-label" class="text-xs text-gray-400"></span>
-          </div>
-          <button onclick="submitWord()"
-            class="bg-navy hover:bg-navy-light text-white text-sm font-medium rounded-lg px-6 py-2.5 transition flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            新增單字
-          </button>
-        </div>
-
-      </div>
-      <!-- error msg -->
-      <p id="form-error" class="hidden text-red-500 text-xs mt-2 ml-1"></p>
-    </section>
-
-    <!-- ── Stats Bar ── -->
-    <div id="stats-bar" class="flex flex-wrap gap-6 text-sm text-gray-500 border-y border-gray-100 py-4 hidden">
-      <span>共 <strong id="stat-total" class="text-gray-900">0</strong> 個單字</span>
-      <span id="stat-cats"></span>
-    </div>
-
-    <!-- ── Category Tabs + Table ── -->
-    <section>
-      <div class="flex items-center justify-between mb-4 gap-4 flex-wrap">
-        <h2 class="text-xs font-mono font-medium text-gray-400 uppercase tracking-widest">單字列表</h2>
-        <!-- Sort -->
-        <div class="flex items-center gap-2 text-xs text-gray-400">
-          <span>排序</span>
-          <select id="sort-select" onchange="renderTable()"
-            class="border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:border-navy text-gray-600 bg-white text-xs">
-            <option value="az">A → Z</option>
-            <option value="za">Z → A</option>
-            <option value="diff-hi">難度 高→低</option>
-            <option value="diff-lo">難度 低→高</option>
-            <option value="newest">最新加入</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div id="cat-tabs" class="flex flex-wrap gap-2 mb-6"></div>
-
-      <!-- Table -->
-      <div id="table-wrap" class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-gray-100 bg-gray-50/60">
-              <th class="text-left px-5 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide w-36" data-sort="word">
-                單字 <span class="sort-icon">↕</span>
-              </th>
-              <th class="text-left px-3 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide w-20">詞性</th>
-              <th class="text-left px-3 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide">中文意思</th>
-              <th class="text-left px-3 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide hidden lg:table-cell">例句</th>
-              <th class="text-left px-3 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide w-24">分類</th>
-              <th class="text-left px-3 py-3 font-medium text-gray-400 text-xs uppercase tracking-wide w-28" data-sort="diff">
-                難度 <span class="sort-icon">↕</span>
-              </th>
-              <th class="px-3 py-3 w-16"></th>
-            </tr>
-          </thead>
-          <tbody id="word-tbody"></tbody>
-        </table>
-      </div>
-
-      <!-- Empty state -->
-      <div id="empty-state" class="text-center py-20 text-gray-400">
-        <div class="text-5xl mb-4">📖</div>
-        <p class="text-base font-medium text-gray-500 mb-1">還沒有任何單字</p>
-        <p class="text-sm">使用上方表單新增你的第一個單字吧！</p>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ── Edit Modal ── -->
-  <div id="edit-modal" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 space-y-5">
-      <div class="flex items-center justify-between">
-        <h3 class="font-semibold text-gray-900">編輯單字</h3>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="space-y-1.5 col-span-2">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">單字</label>
-          <input id="e-word" type="text" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">詞性</label>
-          <select id="e-pos" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition bg-white">
-            <option value="n.">n. 名詞</option>
-            <option value="v.">v. 動詞</option>
-            <option value="adj.">adj. 形容詞</option>
-            <option value="adv.">adv. 副詞</option>
-            <option value="prep.">prep. 介系詞</option>
-            <option value="conj.">conj. 連接詞</option>
-            <option value="phr.">phr. 片語</option>
-            <option value="idiom">idiom 慣用語</option>
-          </select>
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">分類</label>
-          <input id="e-cat" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-        </div>
-        <div class="space-y-1.5 col-span-2">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">中文意思</label>
-          <input id="e-meaning" type="text" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-        </div>
-        <div class="space-y-1.5 col-span-2">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">例句</label>
-          <input id="e-example" type="text" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy/20 transition" />
-        </div>
-        <div class="space-y-1.5 col-span-2">
-          <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">難度</label>
-          <div id="edit-star-input" class="flex gap-1">
-            <span class="star-btn text-2xl text-gray-300" data-v="1">★</span>
-            <span class="star-btn text-2xl text-gray-300" data-v="2">★</span>
-            <span class="star-btn text-2xl text-gray-300" data-v="3">★</span>
-            <span class="star-btn text-2xl text-gray-300" data-v="4">★</span>
-            <span class="star-btn text-2xl text-gray-300" data-v="5">★</span>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-end gap-3 pt-2">
-        <button onclick="closeModal()" class="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg px-4 py-2 transition">取消</button>
-        <button onclick="saveEdit()" class="text-sm bg-navy text-white hover:bg-navy-light rounded-lg px-5 py-2 transition">儲存變更</button>
-      </div>
-    </div>
+<main>
+  <div class="hero">
+    <div class="hero-label">英文學習工具</div>
+    <div class="hero-title">選擇你要用的工具</div>
+    <div class="hero-sub">期末整理 · 聽力劇情 · 單字記錄</div>
   </div>
 
-  <!-- ── Toast ── -->
-  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50"></div>
+  <div class="cards">
 
-<script>
-/* ═══════════════════════════════════════════
-   DATA
-═══════════════════════════════════════════ */
-const STORAGE_KEY = 'ijiwords_data';
-let words = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let activeCat = 'all';
-let editingId = null;
-let formStars = 0;
-let editStars = 0;
-
-const POS_COLORS = {
-  'n.':    { bg: 'bg-blue-50',   text: 'text-blue-600',   border: 'border-blue-200' },
-  'v.':    { bg: 'bg-green-50',  text: 'text-green-600',  border: 'border-green-200' },
-  'adj.':  { bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-200' },
-  'adv.':  { bg: 'bg-amber-50',  text: 'text-amber-600',  border: 'border-amber-200' },
-  'prep.': { bg: 'bg-pink-50',   text: 'text-pink-600',   border: 'border-pink-200' },
-  'conj.': { bg: 'bg-teal-50',   text: 'text-teal-600',   border: 'border-teal-200' },
-  'phr.':  { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200' },
-  'idiom': { bg: 'bg-rose-50',   text: 'text-rose-600',   border: 'border-rose-200' },
-};
-const DIFF_LABELS = ['', '初學', '基礎', '中級', '進階', '高難'];
-
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(words)); }
-
-/* ═══════════════════════════════════════════
-   STAR RATING
-═══════════════════════════════════════════ */
-function initStars(container, setter, getter) {
-  const btns = container.querySelectorAll('.star-btn');
-  btns.forEach(btn => {
-    btn.addEventListener('mouseover', () => highlightStars(btns, +btn.dataset.v));
-    btn.addEventListener('mouseout',  () => highlightStars(btns, getter()));
-    btn.addEventListener('click',     () => {
-      setter(+btn.dataset.v);
-      highlightStars(btns, getter());
-      if (container.id === 'star-input') {
-        document.getElementById('star-label').textContent = DIFF_LABELS[getter()] || '';
-      }
-    });
-  });
-}
-function highlightStars(btns, val) {
-  btns.forEach(b => {
-    b.classList.toggle('text-amber-400', +b.dataset.v <= val);
-    b.classList.toggle('text-gray-300',  +b.dataset.v >  val);
-  });
-}
-
-/* ═══════════════════════════════════════════
-   FORM — ADD
-═══════════════════════════════════════════ */
-document.getElementById('f-cat-select').addEventListener('change', function() {
-  const custom = document.getElementById('f-cat-custom');
-  if (this.value === '自訂') { custom.classList.remove('hidden'); custom.focus(); }
-  else custom.classList.add('hidden');
-});
-
-function submitWord() {
-  const word    = document.getElementById('f-word').value.trim();
-  const pos     = document.getElementById('f-pos').value;
-  const meaning = document.getElementById('f-meaning').value.trim();
-  const example = document.getElementById('f-example').value.trim();
-  const catSel  = document.getElementById('f-cat-select').value;
-  const catCust = document.getElementById('f-cat-custom').value.trim();
-  const cat     = catSel === '自訂' ? catCust : (catSel || '其他');
-  const errEl   = document.getElementById('form-error');
-
-  if (!word || !pos || !meaning) {
-    errEl.textContent = '請填寫必填欄位：單字、詞性、中文意思';
-    errEl.classList.remove('hidden');
-    return;
-  }
-  errEl.classList.add('hidden');
-
-  words.push({ id: Date.now(), word, pos, meaning, example, cat, diff: formStars, ts: Date.now() });
-  save();
-
-  // reset
-  ['f-word','f-meaning','f-example'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-pos').value = '';
-  document.getElementById('f-cat-select').value = '';
-  document.getElementById('f-cat-custom').value = '';
-  document.getElementById('f-cat-custom').classList.add('hidden');
-  formStars = 0;
-  highlightStars(document.querySelectorAll('#star-input .star-btn'), 0);
-  document.getElementById('star-label').textContent = '';
-
-  renderAll();
-  toast('✓ 單字已新增');
-}
-
-/* ═══════════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════════ */
-document.getElementById('search-input').addEventListener('input', renderTable);
-
-function getQuery() { return document.getElementById('search-input').value.toLowerCase().trim(); }
-
-function matchSearch(w, q) {
-  if (!q) return true;
-  return w.word.toLowerCase().includes(q) ||
-         w.meaning.toLowerCase().includes(q) ||
-         (w.example || '').toLowerCase().includes(q) ||
-         w.cat.toLowerCase().includes(q);
-}
-
-/* ═══════════════════════════════════════════
-   TABS
-═══════════════════════════════════════════ */
-function getCats() {
-  const cats = [...new Set(words.map(w => w.cat))].sort();
-  return ['all', ...cats];
-}
-
-function renderTabs() {
-  const cats = getCats();
-  const nav = document.getElementById('cat-tabs');
-  nav.innerHTML = cats.map(c => {
-    const count = c === 'all' ? words.length : words.filter(w => w.cat === c).length;
-    const active = c === activeCat ? 'tab-active' : '';
-    const label = c === 'all' ? '全部' : c;
-    return `<button onclick="setTab('${c}')"
-      class="text-sm px-4 py-1.5 rounded-full border border-gray-200 text-gray-500 hover:border-navy hover:text-navy transition ${active}">
-      ${label} <span class="text-xs opacity-60">${count}</span>
-    </button>`;
-  }).join('');
-}
-
-function setTab(cat) {
-  activeCat = cat;
-  renderTabs();
-  renderTable();
-}
-
-/* ═══════════════════════════════════════════
-   TABLE
-═══════════════════════════════════════════ */
-function getSorted(arr) {
-  const s = document.getElementById('sort-select').value;
-  return [...arr].sort((a, b) => {
-    if (s === 'az')      return a.word.localeCompare(b.word);
-    if (s === 'za')      return b.word.localeCompare(a.word);
-    if (s === 'diff-hi') return (b.diff||0) - (a.diff||0);
-    if (s === 'diff-lo') return (a.diff||0) - (b.diff||0);
-    if (s === 'newest')  return (b.ts||0) - (a.ts||0);
-    return 0;
-  });
-}
-
-function posBadge(pos) {
-  const c = POS_COLORS[pos] || { bg:'bg-gray-100', text:'text-gray-500', border:'border-gray-200' };
-  return `<span class="badge text-xs px-2 py-0.5 rounded-full border ${c.bg} ${c.text} ${c.border}">${pos}</span>`;
-}
-
-function starDisp(diff) {
-  if (!diff) return '<span class="text-gray-200 text-xs">—</span>';
-  return '<span class="text-amber-400 text-sm leading-none">' + '★'.repeat(diff) + '</span>' +
-         '<span class="text-gray-200 text-sm leading-none">' + '★'.repeat(5 - diff) + '</span>';
-}
-
-function renderTable() {
-  const q = getQuery();
-  let filtered = words.filter(w => (activeCat === 'all' || w.cat === activeCat) && matchSearch(w, q));
-  const sorted = getSorted(filtered);
-  const tbody = document.getElementById('word-tbody');
-  const empty = document.getElementById('empty-state');
-  const tableWrap = document.getElementById('table-wrap');
-
-  if (sorted.length === 0) {
-    tableWrap.style.display = 'none';
-    empty.style.display = 'block';
-    return;
-  }
-  tableWrap.style.display = '';
-  empty.style.display = 'none';
-
-  // group by category only if "all"
-  let rows = '';
-  if (activeCat === 'all') {
-    const bycat = {};
-    sorted.forEach(w => { (bycat[w.cat] = bycat[w.cat] || []).push(w); });
-    Object.entries(bycat).sort(([a],[b]) => a.localeCompare(b)).forEach(([cat, ws]) => {
-      rows += `<tr><td colspan="7" class="px-5 pt-6 pb-2">
-        <span class="text-xs font-mono font-medium text-navy/70 uppercase tracking-widest">${cat}</span>
-      </td></tr>`;
-      rows += ws.map(w => rowHTML(w)).join('');
-    });
-  } else {
-    rows = sorted.map(w => rowHTML(w)).join('');
-  }
-  tbody.innerHTML = rows;
-  // animate new rows
-  tbody.querySelectorAll('tr[data-id]').forEach((r,i) => {
-    r.style.animationDelay = `${i * 20}ms`;
-    r.classList.add('row-enter');
-  });
-}
-
-function rowHTML(w) {
-  const ex = w.example
-    ? `<span class="text-gray-400 italic">${escHtml(w.example)}</span>`
-    : '<span class="text-gray-200">—</span>';
-  return `<tr data-id="${w.id}" class="border-t border-gray-50 hover:bg-gray-50/60 transition group">
-    <td class="px-5 py-3.5 font-mono font-medium text-gray-900">${escHtml(w.word)}</td>
-    <td class="px-3 py-3.5">${posBadge(w.pos)}</td>
-    <td class="px-3 py-3.5 text-gray-700">${escHtml(w.meaning)}</td>
-    <td class="px-3 py-3.5 text-xs hidden lg:table-cell max-w-xs truncate">${ex}</td>
-    <td class="px-3 py-3.5">
-      <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">${escHtml(w.cat)}</span>
-    </td>
-    <td class="px-3 py-3.5">${starDisp(w.diff)}</td>
-    <td class="px-3 py-3.5">
-      <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-        <button onclick="openEdit(${w.id})" class="text-gray-400 hover:text-navy transition" title="編輯">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-        </button>
-        <button onclick="deleteWord(${w.id})" class="text-gray-400 hover:text-red-500 transition" title="刪除">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-        </button>
+    <!-- 期末整理 -->
+    <a class="card" href="期末整理.html">
+      <div class="card-icon blue">📋</div>
+      <div class="card-tag">期末考重點</div>
+      <div class="card-title">期末整理</div>
+      <div class="card-desc">單字表、文法表、聽力題、片語整理，依主題分類，一目了然。</div>
+      <div class="card-chips">
+        <span class="chip">單字 70+</span>
+        <span class="chip">文法 2 大項</span>
+        <span class="chip">聽力題</span>
+        <span class="chip">片語</span>
       </div>
-    </td>
-  </tr>`;
-}
+      <div class="card-arrow">開啟 →</div>
+    </a>
 
-/* ═══════════════════════════════════════════
-   STATS
-═══════════════════════════════════════════ */
-function renderStats() {
-  const bar = document.getElementById('stats-bar');
-  if (words.length === 0) { bar.classList.add('hidden'); return; }
-  bar.classList.remove('hidden');
-  document.getElementById('stat-total').textContent = words.length;
-  const cats = [...new Set(words.map(w => w.cat))];
-  document.getElementById('stat-cats').textContent =
-    cats.length > 0 ? `${cats.length} 個分類：${cats.join('、')}` : '';
-}
+    <!-- 聽力劇情 -->
+    <a class="card" href="聽力劇情.html">
+      <div class="card-icon amber">🎧</div>
+      <div class="card-tag">選擇題重點</div>
+      <div class="card-title">聽力劇情整理</div>
+      <div class="card-desc">每段聽力的完整故事、常考細節、關鍵對話原文，搭配模擬選擇題。</div>
+      <div class="card-chips">
+        <span class="chip">Jim &amp; Liz 借錢</span>
+        <span class="chip">珠寶店詐騙</span>
+        <span class="chip">咖啡廳扒竊</span>
+        <span class="chip">CCTV 記憶</span>
+      </div>
+      <div class="card-arrow">開啟 →</div>
+    </a>
 
-/* ═══════════════════════════════════════════
-   EDIT MODAL
-═══════════════════════════════════════════ */
-function openEdit(id) {
-  const w = words.find(x => x.id === id);
-  if (!w) return;
-  editingId = id;
-  document.getElementById('e-word').value    = w.word;
-  document.getElementById('e-pos').value     = w.pos;
-  document.getElementById('e-cat').value     = w.cat;
-  document.getElementById('e-meaning').value = w.meaning;
-  document.getElementById('e-example').value = w.example || '';
-  editStars = w.diff || 0;
-  highlightStars(document.querySelectorAll('#edit-star-input .star-btn'), editStars);
-  document.getElementById('edit-modal').classList.remove('hidden');
-}
-function closeModal() {
-  document.getElementById('edit-modal').classList.add('hidden');
-  editingId = null;
-}
-function saveEdit() {
-  const idx = words.findIndex(x => x.id === editingId);
-  if (idx === -1) return;
-  words[idx] = {
-    ...words[idx],
-    word:    document.getElementById('e-word').value.trim(),
-    pos:     document.getElementById('e-pos').value,
-    cat:     document.getElementById('e-cat').value.trim() || '其他',
-    meaning: document.getElementById('e-meaning').value.trim(),
-    example: document.getElementById('e-example').value.trim(),
-    diff:    editStars,
-  };
-  save();
-  closeModal();
-  renderAll();
-  toast('✓ 已儲存');
-}
-document.getElementById('edit-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('edit-modal')) closeModal();
-});
+    <!-- 單字 App -->
+    <a class="card" href="app.html">
+      <div class="card-icon green">✏️</div>
+      <div class="card-tag">自由記錄</div>
+      <div class="card-title">單字記錄 App</div>
+      <div class="card-desc">自行新增單字、設定分類與難度，資料存在瀏覽器本地，可匯出備份。</div>
+      <div class="card-chips">
+        <span class="chip">新增 / 編輯 / 刪除</span>
+        <span class="chip">分類 Tab</span>
+        <span class="chip">匯出 JSON</span>
+      </div>
+      <div class="card-arrow">開啟 →</div>
+    </a>
 
-/* ═══════════════════════════════════════════
-   DELETE
-═══════════════════════════════════════════ */
-function deleteWord(id) {
-  if (!confirm('確定要刪除這個單字嗎？')) return;
-  words = words.filter(w => w.id !== id);
-  save();
-  renderAll();
-  toast('已刪除');
-}
+  </div>
+</main>
 
-/* ═══════════════════════════════════════════
-   EXPORT / IMPORT
-═══════════════════════════════════════════ */
-function exportJSON() {
-  const blob = new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `ijiwords_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  toast('✓ 已匯出 JSON');
-}
-function importJSON(evt) {
-  const file = evt.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (!Array.isArray(imported)) throw new Error('格式錯誤');
-      const newWords = imported.filter(w => w.word && w.pos && w.meaning);
-      words = [...words, ...newWords];
-      // deduplicate by id
-      const seen = new Set();
-      words = words.filter(w => { if (seen.has(w.id)) return false; seen.add(w.id); return true; });
-      save();
-      renderAll();
-      toast(`✓ 已匯入 ${newWords.length} 個單字`);
-    } catch { toast('匯入失敗：請選擇正確的 JSON 檔案'); }
-  };
-  reader.readAsText(file);
-  evt.target.value = '';
-}
+<footer>ijiWords · 英文學習整理</footer>
 
-/* ═══════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════ */
-let toastTimer;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.opacity = '1';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.style.opacity = '0', 2200);
-}
-
-/* ═══════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════ */
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function renderAll() {
-  renderTabs();
-  renderTable();
-  renderStats();
-}
-
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
-initStars(document.getElementById('star-input'), v => { formStars = v; }, () => formStars);
-initStars(document.getElementById('edit-star-input'), v => { editStars = v; }, () => editStars);
-
-// Enter key submits form
-['f-word','f-pos','f-meaning','f-example'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') submitWord(); });
-});
-
-renderAll();
-</script>
 </body>
 </html>
