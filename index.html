@@ -374,6 +374,28 @@
     .card-syn { font-size: 13px; color: #6366f1; margin-bottom: 6px; }
     .card-ex { font-size: 13px; color: #374151; font-style: italic; line-height: 1.5; }
 
+    /* ── Etymology panel ── */
+    .flash-layout { display: flex; gap: 24px; align-items: flex-start; }
+    .flash-main { flex: 1; min-width: 0; }
+    .etym-panel {
+      width: 210px; flex-shrink: 0;
+      border: 1px solid #e5e7eb; border-radius: 14px;
+      padding: 18px; background: #fafafa;
+      position: sticky; top: 80px;
+      font-size: 13px; line-height: 1.6;
+    }
+    @media (max-width: 700px) { .flash-layout { flex-direction: column; } .etym-panel { width: 100%; position: static; } }
+    .etym-title { font-size: 11px; font-weight: 600; color: #9ca3af; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; }
+    .etym-row { margin-bottom: 6px; display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+    .etym-form { font-family: 'DM Mono', monospace; font-size: 12px; color: #1e3a5f; background: #eff6ff; border-radius: 5px; padding: 1px 7px; white-space: nowrap; }
+    .etym-mean { font-size: 12px; color: #6b7280; }
+    .etym-sep { margin-top: 10px; padding-top: 10px; border-top: 1px solid #e5e7eb; }
+    .etym-tip { font-size: 12px; color: #374151; line-height: 1.6; }
+    .etym-kin-row { margin-top: 10px; }
+    .etym-kin-label { font-size: 11px; color: #9ca3af; margin-bottom: 5px; }
+    .etym-kin-chip { display: inline-block; font-family: 'DM Mono', monospace; font-size: 11px; color: #6366f1; background: #eef2ff; border-radius: 4px; padding: 1px 6px; margin: 2px 2px; }
+    .etym-none { color: #d1d5db; font-size: 12px; text-align: center; padding: 24px 0; }
+
     .card-controls {
       display: flex; align-items: center; justify-content: center; gap: 12px;
       max-width: 480px; margin: 0 auto 12px;
@@ -1051,45 +1073,56 @@
 
     <!-- ── Flashcard ── -->
     <div class="flashcard-area visible" id="flashcard-area">
-      <div class="card-options">
-        <button class="card-opt-btn active" id="opt-all" onclick="setDeckFilter('all')">全部單字</button>
-        <button class="card-opt-btn" id="opt-marked" onclick="setDeckFilter('marked')">只練不熟 ★</button>
-      </div>
-
-      <div class="card-wrap">
-        <div class="card" id="flash-card" onclick="flipCard()">
-          <div class="card-face card-front">
-            <div class="card-en-word" id="flash-en">—</div>
-            <div class="card-hint">點擊翻面查看中文 ↩</div>
+      <div class="flash-layout">
+        <!-- left: card -->
+        <div class="flash-main">
+          <div class="card-options">
+            <button class="card-opt-btn active" id="opt-all" onclick="setDeckFilter('all')">全部單字</button>
+            <button class="card-opt-btn" id="opt-marked" onclick="setDeckFilter('marked')">只練不熟 ★</button>
           </div>
-          <div class="card-face card-back">
-            <div class="card-en-small" id="flash-en-back"></div>
-            <div class="card-zh-word" id="flash-zh">—</div>
-            <div class="card-note-disp" id="flash-note"></div>
-            <div class="card-divider" id="flash-extra-divider" style="display:none"></div>
-            <div class="card-syn" id="flash-syn"></div>
-            <div class="card-ex" id="flash-ex"></div>
+
+          <div class="card-wrap">
+            <div class="card" id="flash-card" onclick="flipCard()">
+              <div class="card-face card-front">
+                <div class="card-en-word" id="flash-en">—</div>
+                <div class="card-hint">點擊翻面查看中文 ↩</div>
+              </div>
+              <div class="card-face card-back">
+                <div class="card-en-small" id="flash-en-back"></div>
+                <div class="card-zh-word" id="flash-zh">—</div>
+                <div class="card-note-disp" id="flash-note"></div>
+                <div class="card-divider" id="flash-extra-divider" style="display:none"></div>
+                <div class="card-syn" id="flash-syn"></div>
+                <div class="card-ex" id="flash-ex"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-controls">
+            <button class="card-nav-btn" onclick="prevCard()">← 上一張</button>
+            <span class="card-counter" id="flash-counter">0 / 0</span>
+            <button class="card-nav-btn" onclick="nextCard()">下一張 →</button>
+          </div>
+          <div style="text-align:center;margin-top:12px;display:flex;justify-content:center;gap:12px;align-items:center;">
+            <button id="flash-star-btn" onclick="toggleCurrentMark()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:20px;padding:5px 16px;color:#d1d5db;transition:all .15s;" title="↓ 標記不熟 / ↑ 取消標記">★</button>
+            <button class="card-nav-btn" onclick="buildDeck()" style="font-size:12px;color:#9ca3af;border-color:#f3f4f6;">🔀 重新洗牌</button>
+          </div>
+          <div style="text-align:center;margin-top:10px;">
+            <select id="voice-select" onchange="setVoice(this.value)" style="font-size:12px;color:#6b7280;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-family:inherit;outline:none;background:#fff;cursor:pointer;max-width:320px;">
+              <option value="">🔊 載入語音...</option>
+            </select>
+          </div>
+
+          <div id="flash-empty" style="text-align:center;padding:48px;color:#9ca3af;font-size:14px;display:none;">
+            沒有標記為不熟的單字。<br>請先在「單字表」中點擊 ★ 標記單字。
           </div>
         </div>
-      </div>
 
-      <div class="card-controls">
-        <button class="card-nav-btn" onclick="prevCard()">← 上一張</button>
-        <span class="card-counter" id="flash-counter">0 / 0</span>
-        <button class="card-nav-btn" onclick="nextCard()">下一張 →</button>
-      </div>
-      <div style="text-align:center;margin-top:12px;display:flex;justify-content:center;gap:12px;align-items:center;">
-        <button id="flash-star-btn" onclick="toggleCurrentMark()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:20px;padding:5px 16px;color:#d1d5db;transition:all .15s;" title="↓ 標記不熟 / ↑ 取消標記">★</button>
-        <button class="card-nav-btn" onclick="buildDeck()" style="font-size:12px;color:#9ca3af;border-color:#f3f4f6;">🔀 重新洗牌</button>
-      </div>
-      <div style="text-align:center;margin-top:10px;">
-        <select id="voice-select" onchange="setVoice(this.value)" style="font-size:12px;color:#6b7280;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-family:inherit;outline:none;background:#fff;cursor:pointer;max-width:320px;">
-          <option value="">🔊 載入語音...</option>
-        </select>
-      </div>
-
-      <div id="flash-empty" style="text-align:center;padding:48px;color:#9ca3af;font-size:14px;display:none;">
-        沒有標記為不熟的單字。<br>請先在「單字表」中點擊 ★ 標記單字。
+        <!-- right: etymology panel -->
+        <div class="etym-panel" id="etym-panel">
+          <div class="etym-title">📚 字根速記</div>
+          <div id="etym-body"><div class="etym-none">—</div></div>
+        </div>
       </div>
     </div>
 
@@ -1235,6 +1268,114 @@
   // ── Flashcard ──
   let flashDeck = [], flashIdx = 0, flashOnlyMarked = false;
 
+  const etymData = {
+    'fast-paced':        { parts:[{f:'fast',m:'快速'},{f:'pace',m:'步調（Latin passus）'}], tip:'pace = 腳步 → 步伐速度', kin:['passage','compass','surpass'] },
+    'touching':          { parts:[{f:'touch',m:'碰觸→感動'},{f:'-ing',m:'形容詞'}], tip:'Latin tangere（觸摸）→ French tochier', kin:['tactful','tangible','contact'] },
+    'gripping':          { parts:[{f:'grip',m:'緊抓（Old English grīpan）'},{f:'-ing',m:''}], tip:'「令人緊握椅把手」= 非常吸引人', kin:['gripe','grip'] },
+    'gory':              { parts:[{f:'gore',m:'凝血（Old English gor）'},{f:'-y',m:'充滿…的'}], tip:'gore = 傷口流出的血塊', kin:['bloody','gory'] },
+    'hysterical':        { parts:[{f:'hyster-',m:'子宮（Greek hystera）'},{f:'-ical',m:'形容詞'}], tip:'古人認為情緒失控來自子宮；現代引申為「極度搞笑」', kin:['hysteria','hysterectomy'] },
+    'creepy':            { parts:[{f:'creep',m:'爬行、令人不安地移動'},{f:'-y',m:''}], tip:'令你起雞皮疙瘩、想逃走的感覺', kin:['crawl','creep'] },
+    'controversial':     { parts:[{f:'contra-',m:'反對（Latin）'},{f:'vers-',m:'轉向'},{f:'-ial',m:'形容詞'}], tip:'controversia = 轉向對立面 = 有爭議', kin:['convert','reverse','verse','universe'] },
+    'outstanding':       { parts:[{f:'out-',m:'超出'},{f:'stand',m:'站立'},{f:'-ing',m:''}], tip:'"stands out from the crowd" → 從人群中脫穎而出', kin:['standout','withstand','understand'] },
+    'thought-provoking': { parts:[{f:'thought',m:'思考'},{f:'pro-',m:'向前'},{f:'vok-',m:'呼喚（Latin vocare）'}], tip:'provoke = 激起；引發深層思考', kin:['invoke','evoke','vocal','revoke'] },
+    'hilarious':         { parts:[{f:'hilar-',m:'歡欣（Greek hilaros）'},{f:'-ious',m:'充滿…的'}], tip:'hilaros = 快樂的 → 令人捧腹大笑', kin:['exhilarate','hilarity'] },
+    'moving':            { parts:[{f:'move',m:'移動→感動（Latin movere）'},{f:'-ing',m:''}], tip:'感情被「移動了」= 感人；= touching', kin:['motion','emotion','remote','promote'] },
+    'stunning':          { parts:[{f:'stun',m:'使震驚（Old French estoner）'},{f:'-ning',m:''}], tip:'estoner = 被雷擊中；stunning = 美得讓人「當場呆住」', kin:['astonish','astound'] },
+    'offensive':         { parts:[{f:'of-',m:'朝向'},{f:'fend-',m:'撃打（Latin fendere）'},{f:'-ive',m:''}], tip:'offend = 撞擊別人感受', kin:['defend','fence','fend'] },
+    'poignant':          { parts:[{f:'poign-',m:'刺（Latin pungere）'},{f:'-ant',m:'形容詞'}], tip:'心酸 = 像被刺到的感受；pungere 也是 punch 的祖先', kin:['puncture','pungent','point','punch'] },
+    'superb':            { parts:[{f:'super-',m:'超越（Latin）'},{f:'-b',m:'古拉丁語形容詞尾'}], tip:'Latin superbus = 出類拔萃的', kin:['superior','supernatural','supermarket'] },
+    'dramatic':          { parts:[{f:'drama',m:'行動（Greek dran）'},{f:'-tic',m:'形容詞'}], tip:'drama 源自希臘文「做/行動」= 舞台上的行動', kin:['drama','melodrama'] },
+    'intense':           { parts:[{f:'in-',m:'向內'},{f:'tens-',m:'拉伸（Latin tendere）'}], tip:'intensus = 被拉到極限的；stretched to the limit', kin:['tension','extend','intend','tent'] },
+    'kidnapping':        { parts:[{f:'kid',m:'孩子'},{f:'nap',m:'抓走（nab 的變體）'}], tip:'17 世紀：steal children for labor', kin:['nab','abduction'] },
+    'hacking':           { parts:[{f:'hack',m:'劈砍→非法入侵'}], tip:'hack 原意「用斧頭劈」→ 駭客「劈開」電腦防線', kin:['hacksaw','hacker'] },
+    'identity theft':    { parts:[{f:'idem',m:'相同（Latin）'},{f:'-ity',m:'名詞'},{f:'theft',m:'偷竊（Old English þēofþ）'}], tip:'theft 與 thief 同源', kin:['identical','identify','thief'] },
+    'bribery':           { parts:[{f:'bribe',m:'Old French briber（欺騙）'},{f:'-ry',m:'行為/做法'}], tip:'-ery/-ry 表示「行為或場所」', kin:['robbery','slavery','archery'] },
+    'arson':             { parts:[{f:'ars-',m:'燃燒（Latin ardere）'},{f:'-on',m:'名詞'}], tip:'ardere = 燃燒；ardent（熱情的）= 像火在燒', kin:['ardent','ardor','arid'] },
+    'stalking':          { parts:[{f:'stalk',m:'悄悄接近（Old English bestealcian）'}], tip:'stalk 與 steal 同根；都有「偷偷移動」的意味', kin:['steal','stealth','stealthy'] },
+    'vandalism':         { parts:[{f:'Vandal',m:'汪達爾人（日耳曼族）'},{f:'-ism',m:'行為'}], tip:'西元 455 年汪達爾人洗劫羅馬 → vandal = 破壞者', kin:['vandalize','vandal'] },
+    'counterfeiting':    { parts:[{f:'counter-',m:'對抗/仿造'},{f:'feit',m:'製造（French faire）'}], tip:'contre-faire = 仿照製造 → counterfeit = 假冒品', kin:['countermand','factual','manufacture'] },
+    'mugging':           { parts:[{f:'mug',m:'臉（俚語→目標）'}], tip:'mug（臉）= 搶劫時直接面對受害者', kin:['mugshot'] },
+    'shoplifting':       { parts:[{f:'shop',m:'商店'},{f:'lift',m:'舉起→偷竊（英式俚語）'}], tip:'lift 在英式英語俚語中 = 偷走；「把東西提走」', kin:['lift','steal'] },
+    'scam':              { tip:'可能源自 Romani scamp（欺騙）；比 fraud 更口語', kin:['con','swindle','trick'] },
+    'fraud':             { parts:[{f:'fraus',m:'欺騙（Latin）'}], tip:'Latin fraus/fraudis = 詭計；frustrate 也源自此根', kin:['defraud','fraudulent'] },
+    'money launderer':   { parts:[{f:'launder',m:'洗滌'},{f:'money',m:'錢'}], tip:'比喻把「骯髒的錢」洗乾淨；1930s 美國黑幫開始流行此說法', kin:['laundry','laundromat'] },
+    'fall off':          { parts:[{f:'fall',m:'落下（Old English feallan）'},{f:'off',m:'離開'}], tip:'fall from grace = 失寵；downfall = 垮台', kin:['downfall','rainfall','pitfall'] },
+    'get stuck':         { parts:[{f:'stuck',m:'past tense of stick'},{f:'get',m:'狀態動詞'}], tip:'stick（黏住）→ stuck（被黏住）→ 動彈不得', kin:['stick','unstuck'] },
+    'knock over':        { parts:[{f:'knock',m:'敲擊（Old English cnocian）'},{f:'over',m:'翻倒'}], tip:'knock = 打；knock over = 打倒；cf. knock out（打昏）', kin:['knockdown','knock out'] },
+    'break down':        { parts:[{f:'break',m:'打破'},{f:'down',m:'停止'}], tip:'機器「崩壞」= break down；人情緒也可 break down（崩潰）', kin:['breakdown','break up','break out'] },
+    'lock out':          { parts:[{f:'lock',m:'鎖'},{f:'out',m:'排除在外'}], tip:'"locked out" = 被鎖在門外；lockdown = 封鎖', kin:['lockdown','locksmith','lock in'] },
+    'run over':          { parts:[{f:'run',m:'行駛'},{f:'over',m:'越過'}], tip:'車輛「行駛越過」= 輾過；也指時間超過（the meeting ran over）', kin:['run down','run into'] },
+    'get knocked out':   { parts:[{f:'knock',m:'撃打'},{f:'out',m:'失去意識'}], tip:'"out" 常代表失去意識；cf. pass out、black out', kin:['knockout','pass out','black out'] },
+    'be on fire':        { tip:'字面：著火；引申：狀態絕佳（He\'s on fire today! = 他今天超厲害！）', kin:['catch fire','set fire'] },
+    'steal':             { parts:[{f:'steal',m:'Old English stelan（偷取）'}], tip:'注意：steal sth FROM sb ≠ rob sb（搶劫人）', kin:['stealth','stealthy','stalk'] },
+    'rob':               { parts:[{f:'rob',m:'Old French rober（搶劫）'}], tip:'rob a bank / rob sb（對象是地點或人）≠ steal（對象是東西）', kin:['robbery','robber','burglar'] },
+    'supportive':        { parts:[{f:'sub-',m:'在下方（Latin）'},{f:'port-',m:'攜帶（Latin portare）'},{f:'-ive',m:''}], tip:'support = 從下方支撐；supportive = 給予支持的', kin:['portable','transport','import','report'] },
+    'unhelpful':         { parts:[{f:'un-',m:'否定前綴'},{f:'help',m:'幫助'},{f:'-ful',m:'充滿'}], tip:'un- 加在形容詞前面表示否定；↔ supportive', kin:['unkind','unfair','unnecessary'] },
+    'diplomatic':        { parts:[{f:'diplo-',m:'雙重（Greek diplos）'},{f:'-ma',m:'文書'},{f:'-tic',m:'形容詞'}], tip:'diploma = 雙折文件（古代官方信函）→ diplomat', kin:['diploma','diplomat','diplomacy'] },
+    'tactful':           { parts:[{f:'tact-',m:'觸感（Latin tangere）'},{f:'-ful',m:'充滿'}], tip:'tact = 社交觸感；知道如何讓對方感覺舒適', kin:['tangible','contact','tactile'] },
+    'sensitive':         { parts:[{f:'sens-',m:'感覺（Latin sentire）'},{f:'-itive',m:'傾向於'}], tip:'≠ sensible！两者常混淆，sentire = 感受', kin:['sense','sentiment','consent','sensible'] },
+    'sensible':          { parts:[{f:'sens-',m:'感覺（Latin sentire）'},{f:'-ible',m:'可以被…的'}], tip:'≠ sensitive！sensible = 明智的；sensitive = 敏感的', kin:['sense','sensitive','nonsense'] },
+    'confrontational':   { parts:[{f:'con-',m:'共同'},{f:'frons',m:'前額/正面（Latin）'},{f:'-al',m:''}], tip:'confront = 正面面對；frons = 額頭（face to face）', kin:['front','frontier','affront'] },
+    'collaborative':     { parts:[{f:'col-',m:'共同（Latin com-）'},{f:'labor-',m:'工作（Latin laborare）'},{f:'-ative',m:''}], tip:'collaborate = 共同工作；laboratory = 工作的地方', kin:['labor','elaborate','laboratory'] },
+    'aggressive':        { parts:[{f:'ag-',m:'朝向（Latin ad-）'},{f:'gress-',m:'步進（Latin gradi）'},{f:'-ive',m:''}], tip:'aggress = 主動走向對方（帶威脅性）', kin:['progress','congress','digress','transgress'] },
+    'assertive':         { parts:[{f:'as-',m:'朝向'},{f:'sert-',m:'聲稱（Latin serere）'},{f:'-ive',m:''}], tip:'assert = 明確聲稱立場；≠ aggressive（不帶敵意）', kin:['assert','insert','exert'] },
+    'direct':            { parts:[{f:'di-',m:'分開'},{f:'rect-',m:'正直（Latin regere）'}], tip:'rect = 直線的；direct = 筆直朝向目標', kin:['correct','erect','director','rectangle'] },
+    'aggression':        { parts:[{f:'ag-',m:'朝向'},{f:'gress-',m:'走步'},{f:'-ion',m:'名詞'}], tip:'與 aggressive 同根；-ion 使動詞變名詞', kin:['aggressive','progress','congress'] },
+    'fairness':          { parts:[{f:'fair',m:'公平（Old English fæger）'},{f:'-ness',m:'名詞'}], tip:'-ness 將形容詞變名詞；fair 也有「美麗的」意思', kin:['unfair','fairplay'] },
+    'justice':           { parts:[{f:'jus/juris',m:'法律/權利（Latin）'},{f:'-tice',m:'名詞'}], tip:'jus = 法律；judge、jury、justify 全來自同一個根', kin:['judge','jury','justify','judicial','injustice'] },
+    'equality':          { parts:[{f:'aequi-',m:'相等（Latin aequus）'},{f:'-ality',m:'名詞'}], tip:'aequus = 水平的；equator = 地球「中間相等的線」', kin:['equal','equation','equator','adequate','equilibrium'] },
+    'greed':             { tip:'greed（n.）→ greedy（adj.）；a greedy person never has enough', kin:['greedy','greedily'] },
+    'generosity':        { parts:[{f:'genus',m:'出生/族群（Latin）'},{f:'-osity',m:'名詞'}], tip:'generous 原義「出身高貴的」→ 高貴之人慷慨解囊', kin:['gene','generate','genius','general','gender'] },
+    'be characterized by':{ parts:[{f:'char-',m:'刻印（Greek kharaktēr）'},{f:'-ize',m:'動詞'}], tip:'character = 刻在石頭上的符號 → 特徵', kin:['character','characteristic'] },
+    'bass':              { parts:[{f:'bass',m:'低音（Latin bassus = 矮/低）'}], tip:'bassus = 矮的；bass voice、bass guitar 都是「低」的概念', kin:['base','basement','bassoon'] },
+    'rhythm':            { parts:[{f:'rhythmos',m:'流動（Greek）'}], tip:'Greek rhythmos = 有規律的流動；注意拼字：rh-ythm（h 不發音）', kin:['rhythmic','rhythmical'] },
+    'percussion':        { parts:[{f:'per-',m:'穿透'},{f:'cuss-',m:'撞擊（Latin quatere）'},{f:'-ion',m:'名詞'}], tip:'percutere = 敲打穿透；打擊樂 = 通過敲打發聲', kin:['concussion','repercussion','discuss'] },
+    'amplification':     { parts:[{f:'ampl-',m:'寬廣（Latin amplus）'},{f:'-ify',m:'使…'},{f:'-ation',m:'名詞'}], tip:'amplus = 寬廣的；amplify = 使聲音變大；ample = 充足的', kin:['amplify','ample','amplitude'] },
+    'addicted':          { parts:[{f:'ad-',m:'向'},{f:'dict-',m:'說/宣告（Latin dicere）'}], tip:'addict（古羅馬）= 被判給某人的奴隸 → 無法離開的狀態', kin:['dictate','dictionary','predict','contradict'] },
+    'sensation':         { parts:[{f:'sens-',m:'感覺（Latin sentire）'},{f:'-ation',m:'名詞'}], tip:'與 sense、sensitive 同根；也指「引起轟動的人事物」', kin:['sense','sensitive','sensational'] },
+    'vibration':         { parts:[{f:'vibr-',m:'搖動（Latin vibrare）'},{f:'-ation',m:'名詞'}], tip:'vibrare = 快速來回移動；vibrant = 充滿活力的（像在振動）', kin:['vibrate','vibrant','vibrato'] },
+    'audition':          { parts:[{f:'audi-',m:'聽（Latin audire）'},{f:'-tion',m:'名詞'}], tip:'audi- = 聽；audience（聽眾）、auditorium 全來自此根', kin:['audio','audience','auditorium','audit'] },
+    'have access to':    { parts:[{f:'ac-',m:'朝向'},{f:'cess-',m:'走到（Latin cedere）'}], tip:'access = 走到/抵達；accessible = 可以走到的 = 可及的', kin:['accessible','excess','recess','process'] },
+    'portfolio':         { parts:[{f:'portare',m:'攜帶（Latin）'},{f:'folium',m:'頁（Latin）'}], tip:'攜帶頁面的袋子 = 作品集；port = 攜帶', kin:['portable','import','export','transport','folio'] },
+    'resemble':          { parts:[{f:'re-',m:'再次'},{f:'sembl-',m:'看起來像（French sembler）'}], tip:'sembler 源自 Latin simulare（模仿）', kin:['similar','simulate','simultaneous','assemble'] },
+    'evaluate':          { parts:[{f:'e-',m:'向外'},{f:'val-',m:'價值（Latin valere）'},{f:'-ate',m:'動詞'}], tip:'valere = 有價值；evaluate = 取出並判斷其價值', kin:['value','valid','prevail','equivalent'] },
+    'script':            { parts:[{f:'script-',m:'書寫（Latin scribere）'}], tip:'scribere = 寫；-scribe/-script 是最常見的字根之一', kin:['describe','prescribe','subscribe','manuscript'] },
+    'stand-up comedian': { parts:[{f:'comedy',m:'Greek kōmōidia（歡慶歌曲）'},{f:'-ian',m:'從事…的人'}], tip:'comos（慶典）+ ōidē（歌）= 喜劇', kin:['comedy','comedic','comic'] },
+    'setting':           { parts:[{f:'set',m:'放置（Old English settan）'},{f:'-ting',m:'名詞'}], tip:'故事「被放置在」某個地點/時代 = 故事背景', kin:['onset','sunset','setup'] },
+    'orchestra':         { parts:[{f:'orkheisthai',m:'跳舞（Greek）'}], tip:'古希臘 orchestra = 舞者在舞台前表演的圓形區域', kin:['orchestrate','orchestral'] },
+    'franchise':         { parts:[{f:'franc-',m:'自由（Old French franc）'},{f:'-ise',m:'名詞/動詞'}], tip:'franc = 自由；franchise 原指「授予特許經營權」', kin:['frank','France','enfranchise'] },
+    'length':            { parts:[{f:'long',m:'長（Old English lang）'},{f:'-th',m:'名詞後綴'}], tip:'-th 將形容詞變名詞：long→length, wide→width, deep→depth', kin:['long','elongate','longevity','prolong'] },
+    'width':             { parts:[{f:'wide',m:'寬（Old English wīd）'},{f:'-th',m:'名詞後綴'}], tip:'wide→width；同型：long→length, deep→depth, warm→warmth', kin:['wide','widen','widespread'] },
+    'height':            { parts:[{f:'high',m:'高（Old English hēah）'},{f:'-th',m:'名詞後綴（不規則）'}], tip:'high→height（注意：拼字多 ei，是古英語不規則變化）', kin:['high','heighten','highland'] },
+    'thickness':         { parts:[{f:'thick',m:'厚（Old English þicce）'},{f:'-ness',m:'名詞'}], tip:'thick→thickness；-ness = 狀態/程度', kin:['thick','thicken','thickly'] },
+    'depth':             { parts:[{f:'deep',m:'深（Old English dēop）'},{f:'-th',m:'名詞後綴'}], tip:'in depth = 深入地；out of one\'s depth = 超出能力範圍', kin:['deep','deepen','deeply'] },
+    'narrowness':        { parts:[{f:'narrow',m:'窄（Old English nearu）'},{f:'-ness',m:'名詞'}], tip:'narrow 作動詞 = 縮小；narrow down = 縮小範圍', kin:['narrow','narrowly','narrow-minded'] },
+    'grace':             { parts:[{f:'gratia',m:'恩典/謝意（Latin）'}], tip:'gratia = 恩惠；grace、grateful、gratitude 全來自同一個根', kin:['grateful','gratitude','graceful','gratis','gratify'] },
+    'commodity':         { parts:[{f:'com-',m:'共同'},{f:'modus',m:'方式/標準（Latin）'},{f:'-ity',m:'名詞'}], tip:'commodus = 方便的；commodity = 可方便取得和交易的東西', kin:['mode','moderate','accommodate','modern'] },
+    'essentially':       { parts:[{f:'esse',m:'存在（Latin）'},{f:'-ntial',m:'形容詞'},{f:'-ly',m:'副詞'}], tip:'esse = 是/存在；essential = 關於存在本質的', kin:['essence','essential','entity','present'] },
+    'in place of':       { parts:[{f:'place',m:'位置（Latin platea）'}], tip:'"take the place of" 也表示取代；plaza、placid 同源', kin:['replace','placement','displace'] },
+    'evolution':         { parts:[{f:'e-',m:'向外'},{f:'volv-',m:'滾動（Latin volvere）'},{f:'-tion',m:'名詞'}], tip:'evolve = 往外展開；revolve（旋轉）、involve（捲入）同根', kin:['evolve','revolve','involve','revolution','envelope'] },
+    'prioritize':        { parts:[{f:'prior',m:'在前面（Latin）'},{f:'-ity',m:'名詞'},{f:'-ize',m:'動詞'}], tip:'prior = 更早的；priority → prioritize = 列為優先', kin:['prior','priority','prime','primary','premiere'] },
+    'apparently':        { parts:[{f:'ap-',m:'朝向'},{f:'par-',m:'顯現（Latin parere）'},{f:'-ently',m:'副詞'}], tip:'apparere = 出現在眼前；apparent = 顯而易見（但可能是表面的）', kin:['appear','apparent','disappear','transparent'] },
+    'interestingly':     { parts:[{f:'inter-',m:'之間'},{f:'esse',m:'存在（Latin）'},{f:'-ingly',m:'副詞'}], tip:'interest = 在……之間存在；有差異才令人感興趣', kin:['interest','interested','disinterest'] },
+    'unfortunately':     { parts:[{f:'un-',m:'否定'},{f:'fort-',m:'機運（Latin fortuna）'},{f:'-unately',m:'副詞'}], tip:'fortuna = 命運；fortunate（幸運的）→ unfortunately（不幸地）', kin:['fortune','fortunate','misfortune','fortunately'] },
+  };
+
+  function updateEtym(en) {
+    const data = etymData[en];
+    const body = document.getElementById('etym-body');
+    if (!data) { body.innerHTML = '<div class="etym-none">—</div>'; return; }
+    let html = '';
+    if (data.parts?.length) {
+      html += data.parts.map(p => `<div class="etym-row"><span class="etym-form">${p.f}</span><span class="etym-mean">${p.m}</span></div>`).join('');
+    }
+    if (data.tip) html += `<div class="etym-sep"><div class="etym-tip">${data.tip}</div></div>`;
+    if (data.kin?.length) {
+      html += `<div class="etym-kin-row"><div class="etym-kin-label">同源字</div>${data.kin.map(w=>`<span class="etym-kin-chip">${w}</span>`).join('')}</div>`;
+    }
+    body.innerHTML = html || '<div class="etym-none">—</div>';
+  }
+
   const vocabExtra = {
     'fast-paced':        { syn: '= action-packed, dynamic', ex: 'The fast-paced thriller kept me on the edge of my seat.' },
     'touching':          { syn: '= moving, heartwarming', ex: 'The touching reunion scene made everyone cry.' },
@@ -1374,6 +1515,7 @@
     document.getElementById('flash-note').textContent = w.note;
     document.getElementById('flash-counter').textContent = `${flashIdx + 1} / ${flashDeck.length}`;
     speak(w.en);
+    updateEtym(w.en);
     const hasSyn = !!w.syn, hasEx = !!w.ex;
     document.getElementById('flash-extra-divider').style.display = (hasSyn || hasEx) ? '' : 'none';
     document.getElementById('flash-syn').textContent = hasSyn ? '≈ ' + w.syn : '';
