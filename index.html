@@ -370,6 +370,9 @@
     .card-zh-word { font-size: 20px; color: #111; margin-top: 6px; }
     .card-note-disp { font-size: 13px; color: #9ca3af; margin-top: 8px; font-style: italic; }
     .card-hint { font-size: 12px; color: #c4c9d4; margin-top: 16px; }
+    .card-divider { width: 40px; height: 1px; background: #e5e7eb; margin: 12px auto 10px; }
+    .card-syn { font-size: 13px; color: #6366f1; margin-bottom: 6px; }
+    .card-ex { font-size: 13px; color: #374151; font-style: italic; line-height: 1.5; }
 
     .card-controls {
       display: flex; align-items: center; justify-content: center; gap: 12px;
@@ -1063,6 +1066,9 @@
             <div class="card-en-small" id="flash-en-back"></div>
             <div class="card-zh-word" id="flash-zh">—</div>
             <div class="card-note-disp" id="flash-note"></div>
+            <div class="card-divider" id="flash-extra-divider" style="display:none"></div>
+            <div class="card-syn" id="flash-syn"></div>
+            <div class="card-ex" id="flash-ex"></div>
           </div>
         </div>
       </div>
@@ -1224,13 +1230,107 @@
   // ── Flashcard ──
   let flashDeck = [], flashIdx = 0, flashOnlyMarked = false;
 
+  const vocabExtra = {
+    'fast-paced':        { syn: '= action-packed, dynamic', ex: 'The fast-paced thriller kept me on the edge of my seat.' },
+    'touching':          { syn: '= moving, heartwarming', ex: 'The touching reunion scene made everyone cry.' },
+    'gripping':          { syn: '= compelling, riveting', ex: 'The gripping plot made it impossible to stop watching.' },
+    'gory':              { syn: '= bloody, graphic', ex: 'The gory horror film was too violent for some viewers.' },
+    'hysterical':        { syn: '= hilarious, side-splitting', ex: 'The comedian\'s hysterical jokes had us all in tears.' },
+    'creepy':            { syn: '= eerie, spine-chilling', ex: 'There was a creepy silence in the abandoned house.' },
+    'controversial':     { syn: '= debatable, divisive', ex: 'The film\'s ending was highly controversial.' },
+    'full of suspense':  { syn: '= thrilling, tense', ex: 'The full of suspense story kept us guessing until the last minute.' },
+    'outstanding':       { syn: '= excellent, remarkable', ex: 'Her outstanding performance won her an Oscar.' },
+    'thought-provoking': { syn: '= stimulating, challenging', ex: 'The documentary was thought-provoking and eye-opening.' },
+    'hilarious':         { syn: '= hysterical, amusing', ex: 'The hilarious comedy had the whole audience in stitches.' },
+    'moving':            { syn: '= touching (= emotional)', ex: 'The moving speech brought tears to everyone\'s eyes.' },
+    'stunning':          { syn: '= breathtaking, spectacular', ex: 'The film\'s stunning visuals won the cinematography award.' },
+    'offensive':         { syn: '= insulting, inappropriate', ex: 'Some viewers found the humor offensive.' },
+    'poignant':          { syn: '= bittersweet, heartbreaking', ex: 'The film\'s poignant ending stayed with me for days.' },
+    'superb':            { syn: '= excellent, magnificent', ex: 'The director did a superb job with the film.' },
+    'dramatic':          { syn: '= intense, theatrical', ex: 'The film ends with a dramatic car chase scene.' },
+    'intense':           { syn: '= gripping, powerful', ex: 'The intense final scene left the audience speechless.' },
+    'kidnapping':        { syn: '= abduction', ex: 'The kidnapping of the CEO shocked the entire city.' },
+    'hacking':           { syn: '= cyber attack, cracking', ex: 'The hacking exposed millions of personal records.' },
+    'identity theft':    { syn: '= fraud, impersonation', ex: 'She reported identity theft after strange charges appeared on her card.' },
+    'bribery':           { syn: '= corruption, graft', ex: 'The official was jailed for bribery.' },
+    'arson':             { syn: 'to commit arson (縱火罪)', ex: 'Police suspected arson after three fires broke out in one week.' },
+    'stalking':          { syn: '= harassment, following', ex: 'The celebrity got a restraining order for stalking.' },
+    'vandalism':         { syn: '= destruction, graffiti', ex: 'The vandalism cost the school thousands of dollars to repair.' },
+    'counterfeiting':    { syn: '= forgery, faking', ex: 'He was arrested for counterfeiting designer handbags.' },
+    'mugging':           { syn: '= street robbery', ex: 'There was a mugging near the park last night.' },
+    'shoplifting':       { syn: '= theft (from a store)', ex: 'She was caught shoplifting a jacket from the department store.' },
+    'scam':              { syn: '= con, swindle, trick', ex: 'Don\'t fall for the online scam promising free gifts.' },
+    'fraud':             { syn: '= deception, swindle', ex: 'He committed fraud by using a fake identity to get a loan.' },
+    'money launderer':   { syn: '= financial criminal', ex: 'The money launderer hid profits through a fake business.' },
+    'fall off':          { syn: '= drop from, tumble off', ex: 'He fell off his bike and hurt his knee.' },
+    'get stuck':         { syn: '= be trapped, be caught', ex: 'We got stuck in traffic for two hours.' },
+    'knock over':        { syn: '= tip over, hit', ex: 'The wind knocked over the street sign.' },
+    'break down':        { syn: '= malfunction, stop working', ex: 'My car broke down on the motorway.' },
+    'lock out':          { syn: '= be shut out', ex: 'I got locked out of my apartment last night.' },
+    'run over':          { syn: '= hit, strike', ex: 'A cyclist was run over by a delivery truck.' },
+    'get knocked out':   { syn: '= be rendered unconscious', ex: 'The boxer got knocked out in the third round.' },
+    'be on fire':        { syn: '= be burning, be ablaze', ex: 'Call 999 — the kitchen is on fire!' },
+    'steal':             { syn: '↔ rob (steal sth FROM sb)', ex: 'Someone stole my wallet on the bus.' },
+    'rob':               { syn: '↔ steal (rob a place / person)', ex: 'Three men tried to rob a convenience store.' },
+    'supportive':        { syn: '↔ unhelpful', ex: 'Her supportive friends helped her through the difficult time.' },
+    'unhelpful':         { syn: '↔ supportive', ex: 'The unhelpful customer service made everything worse.' },
+    'diplomatic':        { syn: '= tactful, discreet', ex: 'She was diplomatic enough to avoid mentioning the mistake.' },
+    'tactful':           { syn: '= diplomatic, sensitive', ex: 'His tactful response avoided hurting anyone\'s feelings.' },
+    'sensitive':         { syn: '≠ sensible（sensible = 明智的）', ex: 'She\'s very sensitive to other people\'s emotions.' },
+    'sensible':          { syn: '≠ sensitive（sensitive = 敏感的）', ex: 'It\'s sensible to save money before spending.' },
+    'confrontational':   { syn: '↔ collaborative', ex: 'His confrontational attitude caused arguments at work.' },
+    'collaborative':     { syn: '↔ confrontational', ex: 'The project required a collaborative approach from both teams.' },
+    'aggressive':        { syn: '↔ assertive（assertive = 果斷但不衝突）', ex: 'The aggressive driver honked at everyone on the road.' },
+    'assertive':         { syn: '↔ aggressive（assertive = 自信不衝突）', ex: 'Be assertive and speak up for what you believe in.' },
+    'direct':            { syn: '= straightforward, frank', ex: 'She gave a direct answer without hesitation.' },
+    'aggression':        { syn: '= hostility, violence', ex: 'The team\'s aggression on the field earned them a red card.' },
+    'fairness':          { syn: '= impartiality, equity', ex: 'The referee\'s sense of fairness was respected by all players.' },
+    'justice':           { syn: '= fairness, righteousness', ex: 'They fought for justice after the wrongful conviction.' },
+    'equality':          { syn: '= fairness, equity', ex: 'Everyone deserves equality regardless of background.' },
+    'greed':             { syn: '= selfishness, avarice → greedy (adj.)', ex: 'His greed led him to steal from his own company.' },
+    'generosity':        { syn: '= kindness, giving → generous (adj.)', ex: 'Her generosity in donating to charity inspired many others.' },
+    'be characterized by': { syn: '= be defined by, feature', ex: 'Jazz is characterized by improvisation and a strong rhythm.' },
+    'bass':              { syn: '= low frequency, deep sound', ex: 'Turn up the bass — I love feeling the beat.' },
+    'rhythm':            { syn: '= beat, tempo, pulse', ex: 'The rhythm of the drums made everyone want to dance.' },
+    'percussion':        { syn: '= drums, beat instruments', ex: 'The percussion section kept perfect time throughout the concert.' },
+    'amplification':     { syn: '= volume boost → amplify (v.)', ex: 'Without amplification, the singer couldn\'t be heard at the back.' },
+    'addicted':          { syn: '= hooked on, obsessed with', ex: 'She\'s addicted to playing guitar — she practices five hours a day.' },
+    'sensation':         { syn: '= feeling / overnight hit', ex: 'The young singer became a worldwide sensation overnight.' },
+    'vibration':         { syn: '= tremor, oscillation → vibrate (v.)', ex: 'You can feel the vibration of the bass through the floor.' },
+    'audition':          { syn: '= tryout, trial performance', ex: 'She was nervous before her audition for the lead role.' },
+    'have access to':    { syn: '= be able to use / reach', ex: 'Not everyone has access to quality music education.' },
+    'portfolio':         { syn: '= collection, showcase', ex: 'Her portfolio included paintings, photos, and short films.' },
+    'resemble':          { syn: '= look like, be similar to', ex: 'This song closely resembles a hit from the 1980s.' },
+    'evaluate':          { syn: '= assess, judge, review', ex: 'The judges will evaluate each performer on technique and creativity.' },
+    'script':            { syn: '= screenplay, dialogue', ex: 'She spent months writing the script for the short film.' },
+    'stand-up comedian': { syn: '= comic, performer', ex: 'The stand-up comedian had the whole room laughing for an hour.' },
+    'setting':           { syn: '= backdrop, scene, location', ex: 'The film\'s setting is a small town in 1950s America.' },
+    'orchestra':         { syn: '= symphony, ensemble', ex: 'The orchestra performed Beethoven\'s Fifth Symphony flawlessly.' },
+    'franchise':         { syn: '= series, brand', ex: 'The Marvel franchise has made over $20 billion worldwide.' },
+    'length':            { syn: '→ long (adj.) / How long is it?', ex: 'What is the length of the Great Wall?' },
+    'width':             { syn: '→ wide / broad (adj.)', ex: 'How wide is the entrance to the tunnel?' },
+    'height':            { syn: '→ high / tall (adj.)', ex: 'What is the height of the Eiffel Tower?' },
+    'thickness':         { syn: '→ thick (adj.)', ex: 'What is the thickness of the castle wall?' },
+    'depth':             { syn: '→ deep (adj.)', ex: 'What\'s the depth of the water here?' },
+    'narrowness':        { syn: '→ narrow (adj.) ↔ width', ex: 'The narrowness of the alley made it hard to pass through.' },
+    'grace':             { syn: '= elegance, poise → graceful (adj.)', ex: 'She moved with grace and confidence on stage.' },
+    'commodity':         { syn: '= product, goods, item', ex: 'Oil is one of the world\'s most traded commodities.' },
+    'essentially':       { syn: '= basically, fundamentally', ex: 'The two plans are essentially the same.' },
+    'in place of':       { syn: '= instead of, as a substitute for', ex: 'Use honey in place of sugar in the recipe.' },
+    'evolution':         { syn: '= development, transformation', ex: 'The evolution of smartphones changed how we communicate.' },
+    'prioritize':        { syn: '= put first, rank → priority (n.)', ex: 'You need to prioritize sleep over late-night studying.' },
+    'apparently':        { syn: '= seemingly, evidently', ex: 'Apparently, the film is based on a true story.' },
+    'interestingly':     { syn: '= notably, curiously', ex: 'Interestingly, the villain is more likeable than the hero.' },
+    'unfortunately':     { syn: '= sadly, regrettably', ex: 'Unfortunately, we arrived too late to see the show.' },
+  };
+
   function getAllVocab() {
     const words = [];
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
       const en = row.querySelector('.word-en')?.textContent.trim();
       const zh = row.querySelector('.word-zh')?.textContent.trim();
       const note = row.querySelector('.word-note')?.textContent.trim() || '';
-      if (en && zh) words.push({ en, zh, note });
+      if (en && zh) words.push({ en, zh, note, ...( vocabExtra[en] || {}) });
     });
     return words;
   }
@@ -1268,6 +1368,10 @@
     document.getElementById('flash-zh').textContent = w.zh;
     document.getElementById('flash-note').textContent = w.note;
     document.getElementById('flash-counter').textContent = `${flashIdx + 1} / ${flashDeck.length}`;
+    const hasSyn = !!w.syn, hasEx = !!w.ex;
+    document.getElementById('flash-extra-divider').style.display = (hasSyn || hasEx) ? '' : 'none';
+    document.getElementById('flash-syn').textContent = hasSyn ? '≈ ' + w.syn : '';
+    document.getElementById('flash-ex').textContent = hasEx ? '"' + w.ex + '"' : '';
     updateFlashStar();
   }
 
@@ -1323,11 +1427,10 @@
   document.addEventListener('keydown', e => {
     if (document.activeElement.tagName === 'INPUT') return;
     if (!document.getElementById('flashcard-area').classList.contains('visible')) return;
-    if (e.key === ' ') { e.preventDefault(); flipCard(); }
+    if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); flipCard(); }
     else if (e.key === 'ArrowRight') nextCard();
     else if (e.key === 'ArrowLeft') prevCard();
-    else if (e.key === 'ArrowDown') { e.preventDefault(); setCurrentMark(true); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setCurrentMark(false); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); toggleCurrentMark(); }
   });
 
   // ── Quiz ──
