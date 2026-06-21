@@ -1273,6 +1273,14 @@
   function nextCard() { flashIdx = (flashIdx + 1) % flashDeck.length; showCard(); }
   function prevCard() { flashIdx = (flashIdx - 1 + flashDeck.length) % flashDeck.length; showCard(); }
 
+  document.addEventListener('keydown', e => {
+    if (document.activeElement.tagName === 'INPUT') return;
+    if (!document.getElementById('flashcard-area').classList.contains('visible')) return;
+    if (e.key === ' ') { e.preventDefault(); flipCard(); }
+    else if (e.key === 'ArrowRight') nextCard();
+    else if (e.key === 'ArrowLeft') prevCard();
+  });
+
   // ── Quiz ──
   const quizData = [
     { passage: 'He stopped _____ because he was tired.', answer: 'driving', options: ['driving','to drive','drive','driven'], explain: 'stop doing = 停止做某事（結束）' },
