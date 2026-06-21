@@ -1082,6 +1082,11 @@
         <button id="flash-star-btn" onclick="toggleCurrentMark()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:20px;padding:5px 16px;color:#d1d5db;transition:all .15s;" title="↓ 標記不熟 / ↑ 取消標記">★</button>
         <button class="card-nav-btn" onclick="buildDeck()" style="font-size:12px;color:#9ca3af;border-color:#f3f4f6;">🔀 重新洗牌</button>
       </div>
+      <div style="text-align:center;margin-top:10px;">
+        <select id="voice-select" onchange="setVoice(this.value)" style="font-size:12px;color:#6b7280;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-family:inherit;outline:none;background:#fff;cursor:pointer;max-width:320px;">
+          <option value="">🔊 載入語音...</option>
+        </select>
+      </div>
 
       <div id="flash-empty" style="text-align:center;padding:48px;color:#9ca3af;font-size:14px;display:none;">
         沒有標記為不熟的單字。<br>請先在「單字表」中點擊 ★ 標記單字。
@@ -1421,12 +1426,44 @@
     });
   }
 
+  let ttsVoice = null;
+  const VOICE_PRIORITY = ['Andrew','Guy','Jenny','Aria','Ryan','Davis','Google US English','Alex','Samantha','David','Mark'];
+
+  function loadVoices() {
+    const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+    if (!voices.length) return;
+    const sel = document.getElementById('voice-select');
+    sel.innerHTML = '';
+    voices.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = v.name;
+      sel.appendChild(opt);
+    });
+    if (!ttsVoice) {
+      for (const pref of VOICE_PRIORITY) {
+        const found = voices.find(v => v.name.includes(pref));
+        if (found) { ttsVoice = found; break; }
+      }
+      if (!ttsVoice) ttsVoice = voices[0];
+    }
+    if (ttsVoice) sel.value = ttsVoice.name;
+  }
+
+  function setVoice(name) {
+    ttsVoice = window.speechSynthesis.getVoices().find(v => v.name === name) || null;
+  }
+
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+
   function speak(text) {
     if (!text || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'en-US';
     utt.rate = 0.88;
+    if (ttsVoice) utt.voice = ttsVoice;
     window.speechSynthesis.speak(utt);
   }
 
