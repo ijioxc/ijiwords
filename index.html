@@ -1368,6 +1368,7 @@
     document.getElementById('flash-zh').textContent = w.zh;
     document.getElementById('flash-note').textContent = w.note;
     document.getElementById('flash-counter').textContent = `${flashIdx + 1} / ${flashDeck.length}`;
+    speak(w.en);
     const hasSyn = !!w.syn, hasEx = !!w.ex;
     document.getElementById('flash-extra-divider').style.display = (hasSyn || hasEx) ? '' : 'none';
     document.getElementById('flash-syn').textContent = hasSyn ? '≈ ' + w.syn : '';
@@ -1420,7 +1421,22 @@
     });
   }
 
-  function flipCard() { document.getElementById('flash-card').classList.toggle('flipped'); }
+  function speak(text) {
+    if (!text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'en-US';
+    utt.rate = 0.88;
+    window.speechSynthesis.speak(utt);
+  }
+
+  function flipCard() {
+    const card = document.getElementById('flash-card');
+    card.classList.toggle('flipped');
+    if (card.classList.contains('flipped') && flashDeck.length > 0) {
+      speak(flashDeck[flashIdx].ex);
+    }
+  }
   function nextCard() { flashIdx = (flashIdx + 1) % flashDeck.length; showCard(); }
   function prevCard() { flashIdx = (flashIdx - 1 + flashDeck.length) % flashDeck.length; showCard(); }
 
