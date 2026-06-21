@@ -1072,7 +1072,8 @@
         <span class="card-counter" id="flash-counter">0 / 0</span>
         <button class="card-nav-btn" onclick="nextCard()">下一張 →</button>
       </div>
-      <div style="text-align:center;margin-top:10px;">
+      <div style="text-align:center;margin-top:12px;display:flex;justify-content:center;gap:12px;align-items:center;">
+        <button id="flash-star-btn" onclick="toggleCurrentMark()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:20px;padding:5px 16px;color:#d1d5db;transition:all .15s;" title="↓ 標記不熟 / ↑ 取消標記">★</button>
         <button class="card-nav-btn" onclick="buildDeck()" style="font-size:12px;color:#9ca3af;border-color:#f3f4f6;">🔀 重新洗牌</button>
       </div>
 
@@ -1267,6 +1268,52 @@
     document.getElementById('flash-zh').textContent = w.zh;
     document.getElementById('flash-note').textContent = w.note;
     document.getElementById('flash-counter').textContent = `${flashIdx + 1} / ${flashDeck.length}`;
+    updateFlashStar();
+  }
+
+  function updateFlashStar() {
+    if (flashDeck.length === 0) return;
+    const word = flashDeck[flashIdx].en;
+    const btn = document.getElementById('flash-star-btn');
+    const marked = markedWords.has(word);
+    btn.style.color = marked ? '#f59e0b' : '#d1d5db';
+    btn.style.borderColor = marked ? '#f59e0b' : '#e5e7eb';
+    btn.title = marked ? '↑ 取消標記（不熟）' : '↓ 標記為不熟';
+  }
+
+  function toggleCurrentMark() {
+    if (flashDeck.length === 0) return;
+    const word = flashDeck[flashIdx].en;
+    if (markedWords.has(word)) {
+      markedWords.delete(word);
+    } else {
+      markedWords.add(word);
+    }
+    saveMarks();
+    syncTableStar(word);
+    updateFlashStar();
+  }
+
+  function setCurrentMark(shouldMark) {
+    if (flashDeck.length === 0) return;
+    const word = flashDeck[flashIdx].en;
+    if (shouldMark === markedWords.has(word)) return;
+    if (shouldMark) markedWords.add(word); else markedWords.delete(word);
+    saveMarks();
+    syncTableStar(word);
+    updateFlashStar();
+  }
+
+  function syncTableStar(word) {
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+      const en = row.querySelector('.word-en')?.textContent.trim();
+      if (en !== word) return;
+      const btn = row.querySelector('.star-btn');
+      if (!btn) return;
+      const marked = markedWords.has(word);
+      btn.classList.toggle('marked', marked);
+      row.classList.toggle('marked-row', marked);
+    });
   }
 
   function flipCard() { document.getElementById('flash-card').classList.toggle('flipped'); }
@@ -1279,6 +1326,8 @@
     if (e.key === ' ') { e.preventDefault(); flipCard(); }
     else if (e.key === 'ArrowRight') nextCard();
     else if (e.key === 'ArrowLeft') prevCard();
+    else if (e.key === 'ArrowDown') { e.preventDefault(); setCurrentMark(true); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setCurrentMark(false); }
   });
 
   // ── Quiz ──
